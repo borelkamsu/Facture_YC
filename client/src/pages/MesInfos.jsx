@@ -1,0 +1,298 @@
+import { useState, useEffect, useRef } from 'react';
+import { Building2, Upload, Save, CheckCircle, AlertCircle, X } from 'lucide-react';
+import api from '../api';
+
+function resizeImage(file, maxSize = 400) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxSize || height > maxSize) {
+          if (width > height) {
+            height = Math.round(height * maxSize / width);
+            width = maxSize;
+          } else {
+            width = Math.round(width * maxSize / height);
+            height = maxSize;
+          }
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/png', 0.92));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function Toast({ type, message, onClose }) {
+  useEffect(() => {
+    const t = setTimeout(onClose, 3500);
+    return () => clearTimeout(t);
+  }, [onClose]);
+
+  return (
+    <div className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl text-sm font-medium border ${
+      type === 'error'
+        ? 'bg-red-50 text-red-700 border-red-200'
+        : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+    }`}>
+      {type === 'error' ? <AlertCircle size={16} /> : <CheckCircle size={16} />}
+      {message}
+    </div>
+  );
+}
+
+const FIELDS = [
+  {
+    section: 'Identité',
+    fields: [
+      { key: 'nom', label: 'Nom de l\'entreprise', placeholder: 'YOUMBI CONCEPT', full: true },
+      { key: 'tagline', label: 'Slogan / Tagline', placeholder: 'Solutions professionnelles', full: true },
+    ]
+  },
+  {
+    section: 'Adresse',
+    fields: [
+      { key: 'adresse', label: 'Adresse', placeholder: '1173 rue Léon Provancher', full: true },
+      { key: 'ville', label: 'Ville', placeholder: 'Lévis' },
+      { key: 'province', label: 'Province', placeholder: 'QC' },
+      { key: 'codePostal', label: 'Code postal', placeholder: 'G7A 0H6' },
+    ]
+  },
+  {
+    section: 'Contact',
+    fields: [
+      { key: 'telephone', label: 'Téléphone', placeholder: '+1 581 928-4374' },
+      { key: 'email', label: 'Courriel', placeholder: 'youmbiconcepting@gmail.com', type: 'email' },
+    ]
+  },
+  {
+    section: 'Certifications',
+    fields: [
+      { key: 'rbq', label: 'Numéro R.B.Q.', placeholder: '58-50-0893' },
+      { key: 'apchq', label: 'Numéro A.P.C.H.Q.', placeholder: '208827' },
+    ]
+  },
+];
+
+export default function MesInfos() {
+  const [form, setForm] = useState({
+    nom: '', tagline: '', adresse: '', ville: '', province: '',
+    codePostal: '', telephone: '', email: '', rbq: '', apchq: '', logo: ''
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [toast, setToast] = useState(null);
+  const [dragOver, setDragOver] = useState(false);
+  const fileRef = useRef(null);
+
+  const showToast = (type, message) => setToast({ type, message });
+
+  useEffect(() => {
+    api.get('/company')
+      .then(res => setForm(f => ({ ...f, ...res.data })))
+      .catch(() => showToast('error', 'Erreur lors du chargement.'))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const handleLogoFile = async (file) => {
+    if (!file || !file.type.startsWith('image/')) {
+      return showToast('error', 'Veuillez sélectionner une image valide.');
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      return showToast('error', 'L\'image ne doit pas dépasser 5 Mo.');
+    }
+    const base64 = await resizeImage(file);
+    setForm(f => ({ ...f, logo: base64 }));
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file) handleLogoFile(file);
+  };
+
+  const handleSave = async () => {
+    if (!form.nom.trim()) return showToast('error', 'Le nom de l\'entreprise est requis.');
+    try {
+      setSaving(true);
+      const res = await api.put('/company', form);
+      setForm(f => ({ ...f, ...res.data }));
+      showToast('success', 'Informations sauvegardées !');
+      // Déclenche un événement pour que la navbar se rafraîchisse
+      window.dispatchEvent(new Event('company-updated'));
+    } catch (err) {
+      showToast('error', err.response?.data?.message || 'Erreur lors de la sauvegarde.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="w-8 h-8 border-2 border-[#cb4154]/30 border-t-[#cb4154] rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-6 max-w-3xl mx-auto pb-12">
+      {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
+
+      {/* En-tête */}
+      <div className="mb-7 flex items-start justify-between">
+        <div>
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-9 h-9 bg-rose-100 rounded-xl flex items-center justify-center">
+              <Building2 size={18} className="text-[#cb4154]" />
+            </div>
+            <h1 className="text-2xl font-bold text-slate-800">Mes Infos</h1>
+          </div>
+          <p className="text-slate-500 text-sm ml-12">Informations de votre entreprise utilisées sur les factures.</p>
+        </div>
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="flex items-center gap-2 bg-[#cb4154] hover:bg-[#b03347] active:scale-95 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-[#cb4154]/25 disabled:opacity-50"
+        >
+          <Save size={16} />
+          {saving ? 'Sauvegarde...' : 'Enregistrer'}
+        </button>
+      </div>
+
+      {/* Logo */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-4">
+        <h2 className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
+          <Upload size={15} className="text-[#cb4154]" />
+          Logo de l'entreprise
+        </h2>
+        <div className="flex items-center gap-6">
+          {/* Prévisualisation */}
+          <div className="relative flex-shrink-0">
+            {form.logo ? (
+              <div className="relative group">
+                <img
+                  src={form.logo}
+                  alt="Logo"
+                  className="w-24 h-24 object-contain rounded-2xl border-2 border-slate-200 bg-slate-50 p-2"
+                />
+                <button
+                  onClick={() => setForm(f => ({ ...f, logo: '' }))}
+                  className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                >
+                  <X size={12} />
+                </button>
+              </div>
+            ) : (
+              <div className="w-24 h-24 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center text-slate-400">
+                <Building2 size={24} className="mb-1 opacity-40" />
+                <span className="text-[10px]">Aucun logo</span>
+              </div>
+            )}
+          </div>
+
+          {/* Zone de dépôt */}
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={handleDrop}
+            onClick={() => fileRef.current?.click()}
+            className={`flex-1 border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
+              dragOver
+                ? 'border-[#cb4154] bg-rose-50'
+                : 'border-slate-200 hover:border-[#cb4154]/50 hover:bg-rose-50/30'
+            }`}
+          >
+            <Upload size={20} className="mx-auto mb-2 text-slate-400" />
+            <p className="text-sm font-medium text-slate-600">
+              Glissez votre logo ici ou <span className="text-[#cb4154] font-semibold">cliquez pour parcourir</span>
+            </p>
+            <p className="text-xs text-slate-400 mt-1">PNG, JPG, SVG — max 5 Mo</p>
+          </div>
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={e => { if (e.target.files[0]) handleLogoFile(e.target.files[0]); e.target.value = ''; }}
+          />
+        </div>
+      </div>
+
+      {/* Sections de formulaire */}
+      {FIELDS.map(({ section, fields }) => (
+        <div key={section} className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-4">
+          <h2 className="text-sm font-semibold text-slate-700 mb-4">{section}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {fields.map(({ key, label, placeholder, type = 'text', full }) => (
+              <div key={key} className={full ? 'md:col-span-2' : ''}>
+                <label className="block text-xs font-semibold text-slate-500 mb-1.5">{label}</label>
+                <input
+                  type={type}
+                  value={form[key] || ''}
+                  onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                  placeholder={placeholder}
+                  className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#cb4154]/20 focus:border-[#cb4154]/60 transition-all"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      {/* Aperçu facture */}
+      <div className="bg-gradient-to-br from-rose-50 to-white rounded-2xl border border-rose-100 p-5 mb-6">
+        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
+          Aperçu — En-tête de facture
+        </p>
+        <div className="flex items-start gap-4">
+          {form.logo
+            ? <img src={form.logo} alt="Logo" className="w-14 h-14 object-contain rounded-xl border border-slate-200 bg-white p-1" />
+            : <div className="w-14 h-14 bg-[#cb4154] rounded-xl flex items-center justify-center text-white font-bold text-lg">{(form.nom || 'YC').substring(0, 2)}</div>
+          }
+          <div>
+            <div className="font-extrabold text-[#cb4154] text-lg">{form.nom || 'Nom de l\'entreprise'}</div>
+            {form.tagline && <div className="text-slate-500 text-xs mt-0.5">{form.tagline}</div>}
+            <div className="text-slate-500 text-xs mt-1 leading-relaxed">
+              {[form.adresse, [form.ville, form.province, form.codePostal].filter(Boolean).join(' ')].filter(Boolean).join(' • ')}
+              {form.telephone && <> • {form.telephone}</>}
+              {form.email && <> • {form.email}</>}
+            </div>
+            <div className="flex gap-2 mt-1.5">
+              {form.rbq && (
+                <span className="text-[10px] bg-rose-100 text-[#cb4154] px-2 py-0.5 rounded-full font-semibold">
+                  R.B.Q. {form.rbq}
+                </span>
+              )}
+              {form.apchq && (
+                <span className="text-[10px] bg-rose-100 text-[#cb4154] px-2 py-0.5 rounded-full font-semibold">
+                  A.P.C.H.Q. {form.apchq}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bouton bas de page */}
+      <div className="flex justify-end">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="flex items-center gap-2 bg-[#cb4154] hover:bg-[#b03347] active:scale-95 text-white px-8 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-[#cb4154]/25 disabled:opacity-50"
+        >
+          <Save size={16} />
+          {saving ? 'Sauvegarde en cours...' : 'Enregistrer les modifications'}
+        </button>
+      </div>
+    </div>
+  );
+}
