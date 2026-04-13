@@ -60,7 +60,7 @@ Remplir les champs comme suit :
 | **Branch** | `main` |
 | **Root Directory** | *(laisser vide)* |
 | **Runtime** | `Node` |
-| **Build Command** | `npm install && npm run build && cd server && npm install` |
+| **Build Command** | `npm install && npm run build && cd server && npm install --include=dev` |
 | **Start Command** | `npm start` |
 | **Instance Type** | `Free` (ou `Starter` à 7$/mois pour éviter la mise en veille) |
 
@@ -71,7 +71,7 @@ Descendre jusqu'à la section **Environment Variables** et ajouter :
 | Clé | Valeur |
 |-----|--------|
 | `NODE_ENV` | `production` |
-| `MONGODB_URI` | `mongodb+srv://lama:lama@cluster0.xn0ura2.mongodb.net/FactureYC` |
+| `MONGODB_URI` | `mongodb+srv://<user>:<password>@cluster0.xxxx.mongodb.net/FactureYC` |
 | `PORT` | `5000` |
 
 > ⚠️ **Important** : Ne jamais committer le fichier `.env` sur GitHub.  
