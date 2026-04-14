@@ -38,11 +38,11 @@ export default function Articles() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.reference.trim() || !form.description.trim() || !form.prixUnitaire)
-      return showToast('error', 'Tous les champs sont obligatoires.');
+    if (!form.reference.trim() || !form.description.trim())
+      return showToast('error', 'La référence et la description sont obligatoires.');
     try {
       setSubmitting(true);
-      await api.post('/articles', { ...form, prixUnitaire: parseFloat(form.prixUnitaire) });
+      await api.post('/articles', { ...form, prixUnitaire: form.prixUnitaire !== '' ? parseFloat(form.prixUnitaire) : null });
       setForm(emptyForm);
       showToast('success', 'Article ajouté !');
       load();
@@ -53,7 +53,7 @@ export default function Articles() {
 
   const saveEdit = async (id) => {
     try {
-      await api.put(`/articles/${id}`, { ...editForm, prixUnitaire: parseFloat(editForm.prixUnitaire) });
+      await api.put(`/articles/${id}`, { ...editForm, prixUnitaire: editForm.prixUnitaire !== '' ? parseFloat(editForm.prixUnitaire) : null });
       showToast('success', 'Article modifié !');
       setEditId(null);
       load();
@@ -99,7 +99,7 @@ export default function Articles() {
                 className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all" />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Prix unitaire ($) *</label>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Prix unitaire ($) <span className="text-slate-400 font-normal">(optionnel)</span></label>
               <input type="number" placeholder="0.00" min="0" step="0.01" value={form.prixUnitaire}
                 onChange={e => setForm(p => ({ ...p, prixUnitaire: e.target.value }))}
                 className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 transition-all text-right" />
@@ -171,7 +171,9 @@ export default function Articles() {
                       <>
                         <td className="px-5 py-3.5"><span className="inline-flex px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100">{a.reference}</span></td>
                         <td className="px-5 py-3.5 text-sm text-slate-700">{a.description}</td>
-                        <td className="px-5 py-3.5 text-sm font-semibold text-slate-800 text-right">{parseFloat(a.prixUnitaire).toFixed(2)} $</td>
+                        <td className="px-5 py-3.5 text-sm font-semibold text-slate-800 text-right">
+                          {a.prixUnitaire != null ? `${parseFloat(a.prixUnitaire).toFixed(2)} $` : <span className="text-slate-400 font-normal text-xs">— à définir</span>}
+                        </td>
                         <td className="px-5 py-3.5 text-right">
                           <button onClick={() => { setEditId(a._id); setEditForm({ reference: a.reference, description: a.description, prixUnitaire: a.prixUnitaire }); }} className="w-8 h-8 inline-flex items-center justify-center text-blue-500 hover:bg-blue-50 rounded-lg transition-colors mr-1"><Pencil size={14} /></button>
                           <button onClick={() => handleDelete(a._id)} className="w-8 h-8 inline-flex items-center justify-center text-red-400 hover:bg-red-50 rounded-lg transition-colors"><Trash2 size={14} /></button>
@@ -205,7 +207,9 @@ export default function Articles() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className="text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100 px-2 py-0.5 rounded-full">{a.reference}</span>
-                          <span className="font-semibold text-slate-800 text-sm">{parseFloat(a.prixUnitaire).toFixed(2)} $</span>
+                          <span className="font-semibold text-slate-800 text-sm">
+                            {a.prixUnitaire != null ? `${parseFloat(a.prixUnitaire).toFixed(2)} $` : <span className="text-slate-400 font-normal text-xs">— à définir</span>}
+                          </span>
                         </div>
                         <p className="text-sm text-slate-600 truncate">{a.description}</p>
                       </div>

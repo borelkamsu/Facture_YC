@@ -15,8 +15,9 @@ const ArticleSchema = new mongoose.Schema({
   },
   prixUnitaire: {
     type: Number,
-    required: true,
-    min: 0
+    required: false,
+    min: 0,
+    default: null
   }
 }, {
   timestamps: true

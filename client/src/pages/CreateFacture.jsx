@@ -44,7 +44,9 @@ function ArticleCombobox({ value, articles, onSelect, onManualChange }) {
               className="w-full text-left px-3.5 py-2.5 hover:bg-blue-50 border-b border-slate-50 last:border-0 group">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-blue-700">{a.reference}</span>
-                <span className="text-xs font-semibold text-slate-500">{parseFloat(a.prixUnitaire).toFixed(2)} $</span>
+                <span className="text-xs font-semibold text-slate-500">
+                  {a.prixUnitaire != null ? `${parseFloat(a.prixUnitaire).toFixed(2)} $` : '— à saisir'}
+                </span>
               </div>
               <div className="text-xs text-slate-500 truncate mt-0.5">{a.description}</div>
             </button>
@@ -180,7 +182,9 @@ export default function CreateFacture() {
     setLignes(prev => {
       const u = [...prev];
       const qty = parseFloat(u[index].quantite) || 1;
-      u[index] = { ...u[index], reference: article.reference, description: article.description, prixUnitaire: article.prixUnitaire, quantite: qty, montant: parseFloat((article.prixUnitaire * qty).toFixed(2)) };
+      const pu = article.prixUnitaire != null ? article.prixUnitaire : '';
+      const montant = pu !== '' ? parseFloat((pu * qty).toFixed(2)) : 0;
+      u[index] = { ...u[index], reference: article.reference, description: article.description, prixUnitaire: pu, quantite: qty, montant };
       return u;
     });
   };
