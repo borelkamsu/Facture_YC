@@ -37,7 +37,7 @@ function Toast({ type, message, onClose }) {
   }, [onClose]);
 
   return (
-    <div className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-2xl text-sm font-medium border ${
+    <div className={`fixed top-16 md:top-5 right-3 md:right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl text-sm font-medium border max-w-xs ${
       type === 'error'
         ? 'bg-red-50 text-red-700 border-red-200'
         : 'bg-emerald-50 text-emerald-700 border-emerald-200'
@@ -144,37 +144,38 @@ export default function MesInfos() {
   }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto pb-12">
+    <div className="p-4 md:p-6 max-w-3xl mx-auto pb-12">
       {toast && <Toast type={toast.type} message={toast.message} onClose={() => setToast(null)} />}
 
       {/* En-tête */}
-      <div className="mb-7 flex items-start justify-between">
+      <div className="mb-5 flex items-start justify-between gap-3">
         <div>
-          <div className="flex items-center gap-3 mb-1">
-            <div className="w-9 h-9 bg-rose-100 rounded-xl flex items-center justify-center">
-              <Building2 size={18} className="text-[#cb4154]" />
+          <div className="flex items-center gap-2.5 mb-0.5">
+            <div className="w-8 h-8 md:w-9 md:h-9 bg-rose-100 rounded-xl flex items-center justify-center">
+              <Building2 size={16} className="text-[#cb4154]" />
             </div>
-            <h1 className="text-2xl font-bold text-slate-800">Mes Infos</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-slate-800">Mes Infos</h1>
           </div>
-          <p className="text-slate-500 text-sm ml-12">Informations de votre entreprise utilisées sur les factures.</p>
+          <p className="text-slate-500 text-xs md:text-sm ml-10 md:ml-12">Informations de votre entreprise utilisées sur les factures.</p>
         </div>
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 bg-[#cb4154] hover:bg-[#b03347] active:scale-95 text-white px-6 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-[#cb4154]/25 disabled:opacity-50"
+          className="flex items-center gap-2 bg-[#cb4154] hover:bg-[#b03347] active:scale-95 text-white px-3 py-2 md:px-6 md:py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all shadow-lg shadow-[#cb4154]/25 disabled:opacity-50 flex-shrink-0"
         >
-          <Save size={16} />
-          {saving ? 'Sauvegarde...' : 'Enregistrer'}
+          <Save size={15} />
+          <span className="hidden sm:inline">{saving ? 'Sauvegarde...' : 'Enregistrer'}</span>
+          <span className="sm:hidden">{saving ? '...' : 'Sauver'}</span>
         </button>
       </div>
 
       {/* Logo */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-4">
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-6 mb-4">
         <h2 className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
           <Upload size={15} className="text-[#cb4154]" />
           Logo de l'entreprise
         </h2>
-        <div className="flex items-center gap-6">
+        <div className="flex flex-col sm:flex-row items-center gap-4">
           {/* Prévisualisation */}
           <div className="relative flex-shrink-0">
             {form.logo ? (
@@ -182,7 +183,7 @@ export default function MesInfos() {
                 <img
                   src={form.logo}
                   alt="Logo"
-                  className="w-24 h-24 object-contain rounded-2xl border-2 border-slate-200 bg-slate-50 p-2"
+                  className="w-20 h-20 md:w-24 md:h-24 object-contain rounded-2xl border-2 border-slate-200 bg-slate-50 p-2"
                 />
                 <button
                   onClick={() => setForm(f => ({ ...f, logo: '' }))}
@@ -192,8 +193,8 @@ export default function MesInfos() {
                 </button>
               </div>
             ) : (
-              <div className="w-24 h-24 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center text-slate-400">
-                <Building2 size={24} className="mb-1 opacity-40" />
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center text-slate-400">
+                <Building2 size={22} className="mb-1 opacity-40" />
                 <span className="text-[10px]">Aucun logo</span>
               </div>
             )}
@@ -205,7 +206,7 @@ export default function MesInfos() {
             onDragLeave={() => setDragOver(false)}
             onDrop={handleDrop}
             onClick={() => fileRef.current?.click()}
-            className={`flex-1 border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
+            className={`flex-1 w-full border-2 border-dashed rounded-2xl p-4 md:p-6 text-center cursor-pointer transition-all ${
               dragOver
                 ? 'border-[#cb4154] bg-rose-50'
                 : 'border-slate-200 hover:border-[#cb4154]/50 hover:bg-rose-50/30'
@@ -213,7 +214,8 @@ export default function MesInfos() {
           >
             <Upload size={20} className="mx-auto mb-2 text-slate-400" />
             <p className="text-sm font-medium text-slate-600">
-              Glissez votre logo ici ou <span className="text-[#cb4154] font-semibold">cliquez pour parcourir</span>
+              <span className="hidden sm:inline">Glissez votre logo ici ou </span>
+              <span className="text-[#cb4154] font-semibold">Appuyez pour choisir</span>
             </p>
             <p className="text-xs text-slate-400 mt-1">PNG, JPG, SVG — max 5 Mo</p>
           </div>
@@ -229,7 +231,7 @@ export default function MesInfos() {
 
       {/* Sections de formulaire */}
       {FIELDS.map(({ section, fields }) => (
-        <div key={section} className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-4">
+        <div key={section} className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-6 mb-4">
           <h2 className="text-sm font-semibold text-slate-700 mb-4">{section}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {fields.map(({ key, label, placeholder, type = 'text', full }) => (
@@ -249,7 +251,7 @@ export default function MesInfos() {
       ))}
 
       {/* Aperçu facture */}
-      <div className="bg-gradient-to-br from-rose-50 to-white rounded-2xl border border-rose-100 p-5 mb-6">
+      <div className="bg-gradient-to-br from-rose-50 to-white rounded-2xl border border-rose-100 p-4 md:p-5 mb-6">
         <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
           Aperçu — En-tête de facture
         </p>
@@ -287,7 +289,7 @@ export default function MesInfos() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 bg-[#cb4154] hover:bg-[#b03347] active:scale-95 text-white px-8 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-[#cb4154]/25 disabled:opacity-50"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#cb4154] hover:bg-[#b03347] active:scale-95 text-white px-8 py-3 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-[#cb4154]/25 disabled:opacity-50"
         >
           <Save size={16} />
           {saving ? 'Sauvegarde en cours...' : 'Enregistrer les modifications'}

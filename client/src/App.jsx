@@ -10,7 +10,7 @@ export default function App() {
     <BrowserRouter>
       <div className="flex h-screen bg-slate-100 overflow-hidden">
         <Navbar />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto pt-14 pb-16 md:pt-0 md:pb-0">
           <Routes>
             <Route path="/" element={<Navigate to="/factures" replace />} />
             <Route path="/articles" element={<Articles />} />
