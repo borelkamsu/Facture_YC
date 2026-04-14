@@ -1,8 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
 const Facture = require('../models/Facture');
 const CompanyInfo = require('../models/CompanyInfo');
+
+async function launchBrowser() {
+  if (process.env.NODE_ENV === 'production') {
+    const chromium = require('@sparticuz/chromium');
+    return puppeteer.launch({
+      args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'],
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+    });
+  }
+  // Développement local (Windows/Mac) — Chrome installé sur le poste
+  return puppeteer.launch({
+    headless: 'new',
+    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
+  });
+}
 
 function fmt(val) {
   return parseFloat(val || 0).toLocaleString('fr-CA', {
@@ -323,10 +341,7 @@ router.get('/:id/pdf', async (req, res) => {
 
     const html = generateInvoiceHTML(facture, company || {});
 
-    browser = await puppeteer.launch({
-      headless: 'new',
-      args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu']
-    });
+    browser = await launchBrowser();
 
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'domcontentloaded' });

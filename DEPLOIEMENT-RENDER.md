@@ -60,7 +60,7 @@ Remplir les champs comme suit :
 | **Branch** | `main` |
 | **Root Directory** | *(laisser vide)* |
 | **Runtime** | `Node` |
-| **Build Command** | `npm install && npm run build && cd server && npm install --include=dev` |
+| **Build Command** | `npm install && npm run build && cd server && npm install` |
 | **Start Command** | `npm start` |
 | **Instance Type** | `Free` (ou `Starter` à 7$/mois pour éviter la mise en veille) |
 
@@ -139,11 +139,8 @@ Render détecte automatiquement le push et redéploie l'application.
 ## Résolution de problèmes courants
 
 ### Le PDF ne se génère pas
-Puppeteer nécessite Chromium. Si l'erreur persiste, ajouter cette variable d'environnement sur Render :
-
-| Clé | Valeur |
-|-----|--------|
-| `PUPPETEER_SKIP_CHROMIUM_DOWNLOAD` | `false` |
+L'application utilise `puppeteer-core` + `@sparticuz/chromium` en production.  
+Si une erreur apparaît lors de la première génération PDF (extraction de Chromium), attendre quelques secondes et réessayer — c'est normal au premier appel.
 
 ### L'app met 30 secondes à démarrer
 Normal sur le **tier gratuit** — Render met le service en veille après 15 min d'inactivité.  
