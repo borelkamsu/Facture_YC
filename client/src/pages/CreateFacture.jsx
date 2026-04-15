@@ -318,8 +318,8 @@ export default function CreateFacture() {
           <div className="w-full md:w-80 space-y-2">
             {[
               { label: 'Montant total hors taxe', value: totals.soustotal, bold: false },
-              { label: 'TPS (5 %)',                value: totals.tps,       bold: false },
-              { label: 'TVQ (9,975 %)',            value: totals.tvq,       bold: false },
+              { label: 'TPS 782101216RT001 (5 %)',           value: totals.tps, bold: false },
+              { label: 'TVQ 12299719862TQ001 (9,975 %)',    value: totals.tvq, bold: false },
             ].map(({ label, value }) => (
               <div key={label} className="flex justify-between text-sm text-slate-600 py-1 border-b border-slate-100 last:border-0">
                 <span>{label}</span>

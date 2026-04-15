@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import { NavLink } from 'react-router-dom';
-import { Package, PlusCircle, Receipt, Building2 } from 'lucide-react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import { Package, PlusCircle, Receipt, Building2, LogOut } from 'lucide-react';
 import fallbackLogo from '../img/YC.png';
 import api from '../api';
+import { useAuth } from '../context/AuthContext';
 
 const navLinks = [
   { to: '/factures',     label: 'Mes Factures',     short: 'Factures', icon: Receipt    },
@@ -12,8 +13,15 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const { logout, username } = useAuth();
+  const navigate             = useNavigate();
   const [logoSrc, setLogoSrc]       = useState(fallbackLogo);
   const [companyName, setCompanyName] = useState('YOUMBI CONCEPT');
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
 
   const fetchCompany = () => {
     api.get('/company')
@@ -75,8 +83,20 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-white/10 text-[11px] text-slate-500 text-center">
-          v1.0.0 &copy; 2025 Youmbi Concept
+        <div className="p-4 border-t border-white/10 space-y-2">
+          <div className="text-[11px] text-slate-400 px-1">
+            Connecté : <span className="text-white font-semibold">{username}</span>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-slate-400 hover:bg-white/10 hover:text-white transition-all"
+          >
+            <LogOut size={16} strokeWidth={2} />
+            Déconnexion
+          </button>
+          <div className="text-[11px] text-slate-600 text-center pt-1">
+            v1.0.0 &copy; 2025 Youmbi Concept
+          </div>
         </div>
       </aside>
 
@@ -88,10 +108,17 @@ export default function Navbar() {
           className="w-8 h-8 object-contain rounded-lg flex-shrink-0"
           onError={() => setLogoSrc(fallbackLogo)}
         />
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="font-extrabold text-white text-sm leading-tight truncate">{nameLine1}</div>
           <div className="text-[#cb4154] text-[10px] font-semibold tracking-widest truncate">{nameLine2}</div>
         </div>
+        <button
+          onClick={handleLogout}
+          className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+          title="Déconnexion"
+        >
+          <LogOut size={18} strokeWidth={2} />
+        </button>
       </header>
 
       {/* ── Mobile bottom nav ─────────────────────────────────────────── */}

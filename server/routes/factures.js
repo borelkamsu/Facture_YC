@@ -249,11 +249,11 @@ function generateInvoiceHTML(facture, company) {
         <span class="total-val">${fmt(facture.soustotal)} $</span>
       </div>
       <div class="total-row">
-        <span>TPS (5 %)</span>
+        <span>TPS 782101216RT001 (5 %)</span>
         <span class="total-val">${fmt(facture.tps)} $</span>
       </div>
       <div class="total-row">
-        <span>TVQ (9,975 %)</span>
+        <span>TVQ 12299719862TQ001 (9,975 %)</span>
         <span class="total-val">${fmt(facture.tvq)} $</span>
       </div>
       <div class="total-row grand">
