@@ -31,10 +31,18 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/factur
 
 async function createDefaultUser() {
   const User = require('./models/User');
-  const existing = await User.findOne({ username: 'Youka' });
-  if (!existing) {
-    await User.create({ username: 'Youka', password: 'Abdiel@2011' });
-    console.log('👤 Utilisateur "Youka" créé avec succès.');
+
+  const users = [
+    { username: 'Youka', password: 'Abdiel@2011' },
+    { username: 'lama',  password: 'lama' },
+  ];
+
+  for (const u of users) {
+    const existing = await User.findOne({ username: u.username });
+    if (!existing) {
+      await User.create(u);
+      console.log(`👤 Utilisateur "${u.username}" créé avec succès.`);
+    }
   }
 }
 
