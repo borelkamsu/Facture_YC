@@ -1,8 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const puppeteer = require('puppeteer-core');
+const path = require('path');
+const fs = require('fs');
 const Facture = require('../models/Facture');
 const CompanyInfo = require('../models/CompanyInfo');
+
+// Logos embarqués en base64 pour le PDF
+const ycLogoPath = path.join(__dirname, '../../client/src/img/YC.png');
+const apchqLogoPath = path.join(__dirname, '../../client/src/img/logo-apchq.png');
+const ycLogoBase64 = fs.existsSync(ycLogoPath)
+  ? 'data:image/png;base64,' + fs.readFileSync(ycLogoPath).toString('base64')
+  : '';
+const apchqLogoBase64 = fs.existsSync(apchqLogoPath)
+  ? 'data:image/png;base64,' + fs.readFileSync(apchqLogoPath).toString('base64')
+  : '';
 
 async function launchBrowser() {
   if (process.env.NODE_ENV === 'production') {
@@ -63,37 +75,55 @@ function generateInvoiceHTML(facture, company) {
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
-      color: #1e293b;
+      color: #111;
       background: #fff;
       font-size: 13px;
       line-height: 1.5;
     }
-    .page { padding: 36px 44px; max-width: 820px; margin: 0 auto; }
+    .page { padding: 36px 44px; max-width: 820px; margin: 0 auto; position: relative; z-index: 1; }
 
+    /* ── Filigrane ── */
+    .watermark {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .watermark img {
+      width: 520px;
+      opacity: 0.06;
+      transform: rotate(-28deg);
+    }
+
+    /* ── En-tête ── */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       padding-bottom: 24px;
-      border-bottom: 3px solid #cb4154;
+      border-bottom: 3px solid #A11010;
       margin-bottom: 32px;
     }
     .brand { display: flex; align-items: flex-start; gap: 14px; }
     .brand-logo { width: 64px; height: 64px; object-fit: contain; }
     .brand-logo-placeholder {
       width: 56px; height: 56px;
-      background: #cb4154;
+      background: #A11010;
       border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
       color: white; font-size: 20px; font-weight: 800;
     }
-    .brand-name { font-size: 22px; font-weight: 800; color: #cb4154; letter-spacing: -0.3px; }
-    .brand-address { color: #64748b; font-size: 11px; margin-top: 3px; line-height: 1.7; }
-    .brand-license { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; }
+    .brand-name { font-size: 22px; font-weight: 800; color: #A11010; letter-spacing: -0.3px; }
+    .brand-profession { color: #333; font-size: 11px; margin-top: 2px; font-weight: 600; }
+    .brand-license { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+    .apchq-logo { height: 28px; object-fit: contain; }
     .license-tag {
-      background: #fdf2f3;
-      border: 1px solid #f5c2c9;
-      color: #cb4154;
+      background: #fdf0f0;
+      border: 1px solid #e8b0b0;
+      color: #A11010;
       font-size: 10px;
       font-weight: 600;
       padding: 2px 7px;
@@ -101,80 +131,91 @@ function generateInvoiceHTML(facture, company) {
     }
     .invoice-meta { text-align: right; }
     .invoice-label {
-      font-size: 32px; font-weight: 800; color: #1e293b;
+      font-size: 32px; font-weight: 800; color: #111;
       letter-spacing: 3px; text-transform: uppercase;
     }
-    .invoice-num { color: #cb4154; font-size: 15px; font-weight: 700; margin-top: 4px; }
-    .invoice-date { color: #64748b; font-size: 12px; margin-top: 2px; }
+    .invoice-num { color: #A11010; font-size: 15px; font-weight: 700; margin-top: 4px; }
+    .invoice-date { color: #555; font-size: 12px; margin-top: 2px; }
     .badge {
       display: inline-block; margin-top: 8px;
-      background: #dcfce7; color: #15803d;
+      background: #111; color: #fff;
       padding: 3px 10px; border-radius: 20px;
       font-size: 11px; font-weight: 600;
     }
 
+    /* ── Parties ── */
     .parties { display: flex; justify-content: space-between; margin-bottom: 32px; }
     .party { max-width: 48%; }
     .party-label {
       font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 1.2px; color: #94a3b8; margin-bottom: 6px;
+      letter-spacing: 1.2px; color: #888; margin-bottom: 6px;
     }
-    .party-name { font-size: 15px; font-weight: 700; color: #0f172a; }
-    .party-detail { color: #475569; font-size: 12px; margin-top: 4px; line-height: 1.7; }
+    .party-name { font-size: 15px; font-weight: 700; color: #000; }
+    .party-detail { color: #444; font-size: 12px; margin-top: 4px; line-height: 1.7; }
     .party.right { text-align: right; }
 
-    .table-wrap { margin-bottom: 28px; border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0; }
+    /* ── Tableau ── */
+    .table-wrap { margin-bottom: 28px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; }
     table { width: 100%; border-collapse: collapse; }
-    thead tr { background: #cb4154; }
+    thead tr { background: #A11010; }
     th {
       color: #fff; padding: 11px 13px; font-size: 11px;
       font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
     }
     th.right, td.right { text-align: right; }
     th.center, td.center { text-align: center; }
-    td { padding: 10px 13px; border-bottom: 1px solid #f1f5f9; color: #334155; }
-    td.num { color: #94a3b8; font-size: 12px; width: 30px; }
-    td.bold { font-weight: 600; color: #0f172a; }
+    td { padding: 10px 13px; border-bottom: 1px solid #f0f0f0; color: #333; }
+    td.num { color: #aaa; font-size: 12px; width: 30px; }
+    td.bold { font-weight: 600; color: #000; }
     tbody tr:last-child td { border-bottom: none; }
-    tbody tr:nth-child(even) { background: #f8fafc; }
+    tbody tr:nth-child(even) { background: #f9f9f9; }
     .ref-badge {
-      background: #fde8eb; color: #cb4154;
+      background: #fde8e8; color: #A11010;
       padding: 2px 8px; border-radius: 12px;
       font-size: 11px; font-weight: 600; white-space: nowrap;
     }
 
+    /* ── Totaux ── */
     .totals-wrap { display: flex; justify-content: flex-end; margin-bottom: 28px; }
     .totals-box {
-      width: 290px; background: #f8fafc;
-      border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;
+      width: 290px; background: #f9f9f9;
+      border: 1px solid #ddd; border-radius: 10px; overflow: hidden;
     }
     .total-row {
       display: flex; justify-content: space-between;
-      padding: 9px 16px; font-size: 13px; color: #475569;
-      border-bottom: 1px solid #e2e8f0;
+      padding: 9px 16px; font-size: 13px; color: #444;
+      border-bottom: 1px solid #eee;
     }
     .total-row:last-child { border-bottom: none; }
     .total-row.grand {
-      background: #cb4154; color: #fff;
+      background: #A11010; color: #fff;
       font-size: 15px; font-weight: 700; padding: 12px 16px;
     }
     .total-val { font-weight: 600; }
 
+    /* ── Notes ── */
     .notes {
-      background: #fdf2f3; border-left: 4px solid #cb4154;
+      background: #fdf0f0; border-left: 4px solid #A11010;
       padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 28px;
     }
-    .notes-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #cb4154; margin-bottom: 4px; letter-spacing: 1px; }
-    .notes-body { color: #7f1d2e; font-size: 12px; }
+    .notes-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #A11010; margin-bottom: 4px; letter-spacing: 1px; }
+    .notes-body { color: #5a1010; font-size: 12px; }
 
+    /* ── Pied de page ── */
     .footer {
-      border-top: 1px solid #e2e8f0; padding-top: 16px;
-      text-align: center; color: #94a3b8; font-size: 11px; line-height: 1.8;
+      border-top: 1px solid #ddd; padding-top: 16px;
+      text-align: center; color: #888; font-size: 11px; line-height: 1.8;
     }
-    .footer strong { color: #64748b; }
+    .footer strong { color: #444; }
   </style>
 </head>
 <body>
+
+  <!-- Filigrane YC -->
+  <div class="watermark">
+    ${ycLogoBase64 ? `<img src="${ycLogoBase64}" alt="" />` : ''}
+  </div>
+
 <div class="page">
 
   <div class="header">
@@ -185,13 +226,10 @@ function generateInvoiceHTML(facture, company) {
       }
       <div>
         <div class="brand-name">${company.nom || ''}</div>
-        <div class="brand-address">
-          ${company.adresse || ''}<br>
-          ${villePostale}<br>
-          ${company.telephone || ''}<br>
-          ${company.email || ''}
-        </div>
+        <div class="brand-profession">Paysagiste</div>
+        <div class="brand-profession">Entrepreneur spécialisé</div>
         <div class="brand-license">
+          ${apchqLogoBase64 ? `<img src="${apchqLogoBase64}" alt="APCHQ" class="apchq-logo" />` : ''}
           ${company.rbq ? `<span class="license-tag">R.B.Q. ${company.rbq}</span>` : ''}
           ${company.apchq ? `<span class="license-tag">A.P.C.H.Q. ${company.apchq}</span>` : ''}
         </div>

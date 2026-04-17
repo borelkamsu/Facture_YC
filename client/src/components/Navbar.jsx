@@ -16,7 +16,7 @@ export default function Navbar() {
   const { logout, username } = useAuth();
   const navigate             = useNavigate();
   const [logoSrc, setLogoSrc]       = useState(fallbackLogo);
-  const [companyName, setCompanyName] = useState('YOUMBI CONCEPT');
+  const [companyName, setCompanyName] = useState('YOUMBI CONCEPT INC');
 
   const handleLogout = () => {
     logout();
@@ -40,12 +40,12 @@ export default function Navbar() {
 
   const parts     = companyName.trim().split(' ');
   const nameLine1 = parts[0] || 'YOUMBI';
-  const nameLine2 = parts.slice(1).join(' ') || 'CONCEPT';
+  const nameLine2 = parts.slice(1).join(' ') || 'CONCEPT INC';
 
   return (
     <>
       {/* ── Desktop sidebar ──────────────────────────────────────────── */}
-      <aside className="hidden md:flex w-64 bg-[#0f2444] text-white flex-col shadow-2xl flex-shrink-0">
+      <aside className="hidden md:flex w-64 bg-[#111111] text-white flex-col shadow-2xl flex-shrink-0">
         <div className="p-6 border-b border-white/10">
           <div className="flex items-center gap-3">
             <img
@@ -56,7 +56,7 @@ export default function Navbar() {
             />
             <div className="min-w-0">
               <div className="font-extrabold text-base tracking-wide truncate">{nameLine1}</div>
-              <div className="text-[#cb4154] text-xs font-semibold tracking-widest truncate">{nameLine2}</div>
+              <div className="text-[#A11010] text-xs font-semibold tracking-widest truncate">{nameLine2}</div>
             </div>
           </div>
           <div className="text-xs text-slate-400 mt-3 font-medium">Gestion de Facturation</div>
@@ -72,7 +72,7 @@ export default function Navbar() {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 ${
                   isActive
-                    ? 'bg-[#cb4154] text-white shadow-lg shadow-[#cb4154]/30'
+                    ? 'bg-[#A11010] text-white shadow-lg shadow-[#A11010]/30'
                     : 'text-slate-400 hover:bg-white/10 hover:text-white'
                 }`
               }
@@ -95,13 +95,13 @@ export default function Navbar() {
             Déconnexion
           </button>
           <div className="text-[11px] text-slate-600 text-center pt-1">
-            v1.0.0 &copy; 2025 Youmbi Concept
+            v1.0.0 &copy; 2025 Youmbi Concept Inc
           </div>
         </div>
       </aside>
 
       {/* ── Mobile top bar ────────────────────────────────────────────── */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-[#0f2444] flex items-center px-4 gap-3 shadow-xl">
+      <header className="md:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-[#111111] flex items-center px-4 gap-3 shadow-xl">
         <img
           src={logoSrc}
           alt="Logo"
@@ -110,7 +110,7 @@ export default function Navbar() {
         />
         <div className="min-w-0 flex-1">
           <div className="font-extrabold text-white text-sm leading-tight truncate">{nameLine1}</div>
-          <div className="text-[#cb4154] text-[10px] font-semibold tracking-widest truncate">{nameLine2}</div>
+          <div className="text-[#A11010] text-[10px] font-semibold tracking-widest truncate">{nameLine2}</div>
         </div>
         <button
           onClick={handleLogout}
@@ -122,7 +122,7 @@ export default function Navbar() {
       </header>
 
       {/* ── Mobile bottom nav ─────────────────────────────────────────── */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0f2444] border-t border-white/10 flex safe-bottom">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#111111] border-t border-white/10 flex safe-bottom">
         {navLinks.map(({ to, short, icon: Icon }) => (
           <NavLink
             key={to}
@@ -130,7 +130,7 @@ export default function Navbar() {
             end={to !== '/factures/new'}
             className={({ isActive }) =>
               `flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-[10px] font-semibold transition-colors ${
-                isActive ? 'text-[#cb4154]' : 'text-slate-500'
+                isActive ? 'text-[#A11010]' : 'text-slate-500'
               }`
             }
           >

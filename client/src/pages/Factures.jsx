@@ -63,8 +63,8 @@ export default function Factures() {
       <div className="mb-5 flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2.5 mb-0.5">
-            <div className="w-8 h-8 md:w-9 md:h-9 bg-blue-100 rounded-xl flex items-center justify-center">
-              <Receipt size={16} className="text-blue-600" />
+            <div className="w-8 h-8 md:w-9 md:h-9 bg-[#A11010]/10 rounded-xl flex items-center justify-center">
+              <Receipt size={16} className="text-[#A11010]" />
             </div>
             <h1 className="text-xl md:text-2xl font-bold text-slate-800">Mes Factures</h1>
           </div>
@@ -74,7 +74,7 @@ export default function Factures() {
         </div>
         <button
           onClick={() => navigate('/factures/new')}
-          className="flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 md:px-5 md:py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all shadow-lg shadow-blue-500/25"
+          className="flex items-center gap-1.5 bg-[#A11010] hover:bg-[#8a0d0d] text-white px-3 py-2 md:px-5 md:py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all shadow-lg shadow-[#A11010]/25"
         >
           <Plus size={15} />
           <span className="hidden sm:inline">Nouvelle Facture</span>
@@ -84,17 +84,17 @@ export default function Factures() {
 
       {loading ? (
         <div className="p-14 text-center text-slate-400 text-sm bg-white rounded-2xl border border-slate-200">
-          <div className="w-7 h-7 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-3" />
+          <div className="w-7 h-7 border-2 border-[#A11010]/20 border-t-[#A11010] rounded-full animate-spin mx-auto mb-3" />
           Chargement...
         </div>
       ) : factures.length === 0 ? (
         <div className="p-16 text-center bg-white rounded-2xl border border-slate-200">
-          <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <FileText size={28} className="text-blue-300" />
+          <div className="w-16 h-16 bg-[#A11010]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <FileText size={28} className="text-[#A11010]/40" />
           </div>
           <p className="text-slate-500 font-semibold mb-1">Aucune facture</p>
           <p className="text-slate-400 text-sm mb-6">Créez votre première facture.</p>
-          <button onClick={() => navigate('/factures/new')} className="inline-flex items-center gap-2 bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-blue-500/25">
+          <button onClick={() => navigate('/factures/new')} className="inline-flex items-center gap-2 bg-[#A11010] text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-[#A11010]/25">
             <Plus size={16} /> Créer une facture
           </button>
         </div>
@@ -113,7 +113,7 @@ export default function Factures() {
               <tbody>
                 {factures.map((f, idx) => (
                   <tr key={f._id} className={`hover:bg-slate-50/80 transition-colors ${idx < factures.length - 1 ? 'border-b border-slate-50' : ''}`}>
-                    <td className="px-5 py-4"><span className="font-bold text-blue-700 text-sm">{f.numero}</span></td>
+                    <td className="px-5 py-4"><span className="font-bold text-[#A11010] text-sm">{f.numero}</span></td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-1.5 text-sm text-slate-600">
                         <Calendar size={13} className="text-slate-400" />{fmtDate(f.date)}
@@ -135,9 +135,9 @@ export default function Factures() {
                         <button onClick={() => navigate(`/factures/${f._id}/edit`)} className="inline-flex items-center gap-1 text-slate-600 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors">
                           <Pencil size={12} /> Modifier
                         </button>
-                        <button onClick={() => handlePDF(f)} disabled={downloading === f._id} className="inline-flex items-center gap-1 text-blue-600 bg-blue-50 hover:bg-blue-100 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50">
+                        <button onClick={() => handlePDF(f)} disabled={downloading === f._id} className="inline-flex items-center gap-1 text-[#A11010] bg-[#A11010]/10 hover:bg-[#A11010]/20 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50">
                           <Download size={12} />
-                          {downloading === f._id ? <span className="flex items-center gap-1"><span className="w-3 h-3 border border-blue-400 border-t-transparent rounded-full animate-spin" />PDF...</span> : 'PDF'}
+                          {downloading === f._id ? <span className="flex items-center gap-1"><span className="w-3 h-3 border border-[#A11010] border-t-transparent rounded-full animate-spin" />PDF...</span> : 'PDF'}
                         </button>
                         <button onClick={() => handleDelete(f._id)} className="w-7 h-7 flex items-center justify-center text-red-400 hover:bg-red-50 rounded-lg transition-colors">
                           <Trash2 size={13} />
@@ -150,7 +150,7 @@ export default function Factures() {
             </table>
             <div className="px-5 py-3 bg-slate-50 border-t border-slate-100 flex justify-between text-xs">
               <span className="text-slate-500">{factures.length} facture{factures.length > 1 ? 's' : ''}</span>
-              <span className="font-semibold text-slate-600">Total TTC : <span className="text-blue-700">{fmtMoney(factures.reduce((s, f) => s + (f.total || 0), 0))} $</span></span>
+              <span className="font-semibold text-slate-600">Total TTC : <span className="text-[#A11010]">{fmtMoney(factures.reduce((s, f) => s + (f.total || 0), 0))} $</span></span>
             </div>
           </div>
 
@@ -159,7 +159,7 @@ export default function Factures() {
             {factures.map(f => (
               <div key={f._id} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div className="px-4 py-3 flex items-center justify-between border-b border-slate-100">
-                  <span className="font-bold text-blue-700 text-sm">{f.numero}</span>
+                  <span className="font-bold text-[#A11010] text-sm">{f.numero}</span>
                   <span className="text-xs text-slate-500 flex items-center gap-1">
                     <Calendar size={11} />{fmtDate(f.date)}
                   </span>
@@ -179,7 +179,7 @@ export default function Factures() {
                   <button onClick={() => navigate(`/factures/${f._id}/edit`)} className="flex-1 flex items-center justify-center gap-1.5 text-slate-600 bg-slate-100 hover:bg-slate-200 py-2 rounded-xl text-xs font-semibold transition-colors">
                     <Pencil size={13} /> Modifier
                   </button>
-                  <button onClick={() => handlePDF(f)} disabled={downloading === f._id} className="flex-1 flex items-center justify-center gap-1.5 text-blue-600 bg-blue-50 hover:bg-blue-100 py-2 rounded-xl text-xs font-semibold transition-colors disabled:opacity-50">
+                  <button onClick={() => handlePDF(f)} disabled={downloading === f._id} className="flex-1 flex items-center justify-center gap-1.5 text-[#A11010] bg-[#A11010]/10 hover:bg-[#A11010]/20 py-2 rounded-xl text-xs font-semibold transition-colors disabled:opacity-50">
                     <Download size={13} />
                     {downloading === f._id ? 'PDF...' : 'PDF'}
                   </button>
@@ -190,7 +190,7 @@ export default function Factures() {
               </div>
             ))}
             <div className="text-center text-xs text-slate-500 py-2">
-              Total général TTC : <span className="font-bold text-blue-700">{fmtMoney(factures.reduce((s, f) => s + (f.total || 0), 0))} $</span>
+              Total général TTC : <span className="font-bold text-[#A11010]">{fmtMoney(factures.reduce((s, f) => s + (f.total || 0), 0))} $</span>
             </div>
           </div>
         </>
