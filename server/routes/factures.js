@@ -135,6 +135,7 @@ function generateInvoiceHTML(facture, company) {
       letter-spacing: 3px; text-transform: uppercase;
     }
     .invoice-num { color: #A11010; font-size: 15px; font-weight: 700; margin-top: 4px; }
+    .invoice-name { color: #333; font-size: 12px; font-style: italic; margin-top: 3px; }
     .invoice-date { color: #555; font-size: 12px; margin-top: 2px; }
     .badge {
       display: inline-block; margin-top: 8px;
@@ -238,6 +239,7 @@ function generateInvoiceHTML(facture, company) {
     <div class="invoice-meta">
       <div class="invoice-label">Facture</div>
       <div class="invoice-num">N° ${facture.numero}</div>
+      ${facture.nom ? `<div class="invoice-name">${facture.nom}</div>` : ''}
       <div class="invoice-date">Date : ${fmtDate(facture.date)}</div>
       <span class="badge">PAYABLE DÈS RÉCEPTION</span>
     </div>

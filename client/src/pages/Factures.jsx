@@ -113,7 +113,10 @@ export default function Factures() {
               <tbody>
                 {factures.map((f, idx) => (
                   <tr key={f._id} className={`hover:bg-slate-50/80 transition-colors ${idx < factures.length - 1 ? 'border-b border-slate-50' : ''}`}>
-                    <td className="px-5 py-4"><span className="font-bold text-[#A11010] text-sm">{f.numero}</span></td>
+                    <td className="px-5 py-4">
+                      <span className="font-bold text-[#A11010] text-sm">{f.numero}</span>
+                      {f.nom && <div className="text-xs text-slate-500 mt-0.5">{f.nom}</div>}
+                    </td>
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-1.5 text-sm text-slate-600">
                         <Calendar size={13} className="text-slate-400" />{fmtDate(f.date)}
@@ -159,7 +162,10 @@ export default function Factures() {
             {factures.map(f => (
               <div key={f._id} className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div className="px-4 py-3 flex items-center justify-between border-b border-slate-100">
-                  <span className="font-bold text-[#A11010] text-sm">{f.numero}</span>
+                  <div>
+                    <span className="font-bold text-[#A11010] text-sm">{f.numero}</span>
+                    {f.nom && <div className="text-xs text-slate-500 mt-0.5">{f.nom}</div>}
+                  </div>
                   <span className="text-xs text-slate-500 flex items-center gap-1">
                     <Calendar size={11} />{fmtDate(f.date)}
                   </span>

@@ -141,6 +141,7 @@ export default function CreateFacture() {
   const [numeroFacture, setNumeroFacture] = useState('');
   const [client, setClient]     = useState({ nom: '', adresse: '', ville: '', codePostal: '', telephone: '', email: '' });
   const [lignes, setLignes]     = useState([emptyLigne()]);
+  const [nomFacture, setNomFacture] = useState('');
   const [notes, setNotes]       = useState('');
   const [error, setError]       = useState('');
   const [saving, setSaving]     = useState(false);
@@ -153,6 +154,7 @@ export default function CreateFacture() {
           const f = r.data;
           setDate(f.date ? f.date.split('T')[0] : new Date().toISOString().split('T')[0]);
           setNumeroFacture(f.numero || '');
+          setNomFacture(f.nom || '');
           setClient({ nom: f.client?.nom || '', adresse: f.client?.adresse || '', ville: f.client?.ville || '', codePostal: f.client?.codePostal || '', telephone: f.client?.telephone || '', email: f.client?.email || '' });
           setLignes(f.lignes?.length ? f.lignes.map(l => ({ reference: l.reference || '', description: l.description || '', prixUnitaire: l.prixUnitaire ?? '', quantite: l.quantite ?? 1, montant: l.montant ?? 0 })) : [emptyLigne()]);
           setNotes(f.notes || '');
@@ -196,7 +198,7 @@ export default function CreateFacture() {
     if (!lignesValides.length) return setError('Ajoutez au moins un article.');
     try {
       setSaving(true);
-      const payload = { date, client, notes, lignes: lignesValides, ...totals };
+      const payload = { date, nom: nomFacture, client, notes, lignes: lignesValides, ...totals };
       if (isEdit) await api.put(`/factures/${id}`, payload);
       else        await api.post('/factures', payload);
       navigate('/factures');
@@ -247,6 +249,18 @@ export default function CreateFacture() {
         <label className="block text-xs font-semibold text-slate-500 mb-1.5">Date de la facture</label>
         <input type="date" value={date} onChange={e => setDate(e.target.value)}
           className="border border-slate-200 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 w-full md:w-auto" />
+      </div>
+
+      {/* Nom de la facture */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-5 mb-4">
+        <label className="block text-xs font-semibold text-slate-500 mb-1.5">Nom de la facture <span className="font-normal text-slate-400">(optionnel)</span></label>
+        <input
+          type="text"
+          value={nomFacture}
+          onChange={e => setNomFacture(e.target.value)}
+          placeholder="Ex : Travaux aménagement printemps, Entretien pelouse…"
+          className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#A11010]/20 focus:border-[#A11010]/60 transition-all"
+        />
       </div>
 
       {/* Client */}

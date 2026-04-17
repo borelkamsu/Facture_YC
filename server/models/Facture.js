@@ -13,6 +13,10 @@ const FactureSchema = new mongoose.Schema({
     type: String,
     unique: true
   },
+  nom: {
+    type: String,
+    default: ''
+  },
   date: {
     type: Date,
     default: Date.now
