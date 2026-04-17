@@ -47,8 +47,15 @@ function fmtDate(date) {
   });
 }
 
+function normalizeNom(nom) {
+  if (!nom) return '';
+  // S'assure que "YOUMBI CONCEPT" est toujours suivi de "INC"
+  return nom.replace(/youmbi\s+concept(?!\s+inc)/gi, 'YOUMBI CONCEPT INC');
+}
+
 function generateInvoiceHTML(facture, company) {
   const logo = company.logo || '';
+  const nomEntreprise = normalizeNom(company.nom);
   const villePostale = [company.ville, company.province, company.codePostal].filter(Boolean).join('  ');
 
   const lignesHTML = facture.lignes.map((l, i) => `
@@ -223,10 +230,10 @@ function generateInvoiceHTML(facture, company) {
     <div class="brand">
       ${logo
         ? `<img src="${logo}" alt="Logo" class="brand-logo" />`
-        : `<div class="brand-logo-placeholder">${(company.nom || 'YC').substring(0, 2)}</div>`
+        : `<div class="brand-logo-placeholder">${(nomEntreprise || 'YC').substring(0, 2)}</div>`
       }
       <div>
-        <div class="brand-name">${company.nom || ''}</div>
+        <div class="brand-name">${nomEntreprise}</div>
         <div class="brand-profession">Paysagiste</div>
         <div class="brand-profession">Entrepreneur spécialisé</div>
         <div class="brand-license">
@@ -248,7 +255,7 @@ function generateInvoiceHTML(facture, company) {
   <div class="parties">
     <div class="party">
       <div class="party-label">De</div>
-      <div class="party-name">${company.nom || ''}</div>
+      <div class="party-name">${nomEntreprise}</div>
       <div class="party-detail">
         ${company.adresse || ''}<br>
         ${villePostale}<br>
@@ -310,7 +317,7 @@ function generateInvoiceHTML(facture, company) {
   </div>` : ''}
 
   <div class="footer">
-    <strong>${company.nom || ''}</strong> — Merci pour votre confiance !<br>
+    <strong>${nomEntreprise}</strong> — Merci pour votre confiance !<br>
     ${[company.adresse, villePostale].filter(Boolean).join(', ')}
     ${company.telephone ? ' | ' + company.telephone : ''}
     ${company.email ? ' | ' + company.email : ''}<br>
