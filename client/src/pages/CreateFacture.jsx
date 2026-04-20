@@ -209,7 +209,7 @@ export default function CreateFacture() {
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-2 border-[#A11010]/20 border-t-[#A11010] rounded-full animate-spin" />
+      <div className="w-8 h-8 border-2 border-[#640000]/20 border-t-[#640000] rounded-full animate-spin" />
     </div>
   );
 
@@ -220,8 +220,8 @@ export default function CreateFacture() {
       <div className="mb-5 flex items-start justify-between gap-3">
         <div>
           <div className="flex items-center gap-2.5 mb-0.5">
-            <div className="w-8 h-8 md:w-9 md:h-9 bg-[#A11010]/10 rounded-xl flex items-center justify-center">
-              <FileText size={16} className="text-[#A11010]" />
+            <div className="w-8 h-8 md:w-9 md:h-9 bg-[#640000]/10 rounded-xl flex items-center justify-center">
+              <FileText size={16} className="text-[#640000]" />
             </div>
             <div>
               <h1 className="text-xl md:text-2xl font-bold text-slate-800">
@@ -232,7 +232,7 @@ export default function CreateFacture() {
           </div>
         </div>
         <button onClick={handleSave} disabled={saving}
-          className="flex-shrink-0 flex items-center gap-1.5 bg-[#A11010] hover:bg-[#8a0d0d] text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-[#A11010]/25 disabled:opacity-50">
+          className="flex-shrink-0 flex items-center gap-1.5 bg-[#640000] hover:bg-[#8a0d0d] text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-[#640000]/25 disabled:opacity-50">
           <Save size={15} />
           <span className="hidden sm:inline">{saving ? 'Sauvegarde...' : (isEdit ? 'Enregistrer' : 'Enregistrer')}</span>
         </button>
@@ -259,7 +259,7 @@ export default function CreateFacture() {
           value={nomFacture}
           onChange={e => setNomFacture(e.target.value)}
           placeholder="Ex : Travaux aménagement printemps, Entretien pelouse…"
-          className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#A11010]/20 focus:border-[#A11010]/60 transition-all"
+          className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#640000]/20 focus:border-[#640000]/60 transition-all"
         />
       </div>
 
@@ -289,7 +289,7 @@ export default function CreateFacture() {
         <div className="px-4 md:px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
           <h2 className="text-sm font-semibold text-slate-700">Articles / Services</h2>
           <button onClick={() => setLignes(p => [...p, emptyLigne()])}
-            className="flex items-center gap-1.5 text-[#A11010] hover:text-[#8a0d0d] bg-[#A11010]/10 hover:bg-[#A11010]/20 px-3 py-2 rounded-xl text-xs font-semibold transition-all">
+            className="flex items-center gap-1.5 text-[#640000] hover:text-[#8a0d0d] bg-[#640000]/10 hover:bg-[#640000]/20 px-3 py-2 rounded-xl text-xs font-semibold transition-all">
             <Plus size={13} /> Ajouter
           </button>
         </div>
@@ -340,7 +340,7 @@ export default function CreateFacture() {
                 <span className="font-medium">{value.toFixed(2)} $</span>
               </div>
             ))}
-            <div className="bg-[#A11010] rounded-xl px-4 py-3 flex justify-between items-center mt-2">
+            <div className="bg-[#640000] rounded-xl px-4 py-3 flex justify-between items-center mt-2">
               <span className="text-white font-bold text-sm">Total TTC</span>
               <span className="text-white font-extrabold text-lg">{totals.total.toFixed(2)} $</span>
             </div>
@@ -355,7 +355,7 @@ export default function CreateFacture() {
           Annuler
         </button>
         <button onClick={handleSave} disabled={saving}
-          className="flex items-center gap-2 bg-[#A11010] hover:bg-[#8a0d0d] text-white px-6 md:px-8 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-[#A11010]/25 disabled:opacity-50">
+          className="flex items-center gap-2 bg-[#640000] hover:bg-[#8a0d0d] text-white px-6 md:px-8 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-[#640000]/25 disabled:opacity-50">
           <Save size={15} />
           {saving ? 'Sauvegarde...' : (isEdit ? 'Enregistrer les modifications' : 'Enregistrer la facture')}
         </button>

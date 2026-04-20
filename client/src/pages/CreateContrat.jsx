@@ -57,7 +57,7 @@ function Field({ label, required, children }) {
   );
 }
 
-const inputCls = "w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#A11010]/20 focus:border-[#A11010]/60 transition-all bg-white";
+const inputCls = "w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#640000]/20 focus:border-[#640000]/60 transition-all bg-white";
 
 export default function CreateContrat() {
   const navigate          = useNavigate();
@@ -248,7 +248,7 @@ export default function CreateContrat() {
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">
-      <div className="w-8 h-8 border-2 border-[#A11010]/20 border-t-[#A11010] rounded-full animate-spin" />
+      <div className="w-8 h-8 border-2 border-[#640000]/20 border-t-[#640000] rounded-full animate-spin" />
     </div>
   );
 
@@ -260,8 +260,8 @@ export default function CreateContrat() {
       {/* En-tête */}
       <div className="mb-5 flex items-start justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 bg-[#A11010]/10 rounded-xl flex items-center justify-center flex-shrink-0">
-            <FileSignature size={17} className="text-[#A11010]" />
+          <div className="w-9 h-9 bg-[#640000]/10 rounded-xl flex items-center justify-center flex-shrink-0">
+            <FileSignature size={17} className="text-[#640000]" />
           </div>
           <div>
             <h1 className="text-xl md:text-2xl font-bold text-slate-800">
@@ -271,7 +271,7 @@ export default function CreateContrat() {
           </div>
         </div>
         <button onClick={handleSave} disabled={saving}
-          className="flex-shrink-0 flex items-center gap-1.5 bg-[#A11010] hover:bg-[#8a0d0d] text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-[#A11010]/25 disabled:opacity-50">
+          className="flex-shrink-0 flex items-center gap-1.5 bg-[#640000] hover:bg-[#8a0d0d] text-white px-4 py-2.5 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-[#640000]/25 disabled:opacity-50">
           <Save size={15} />
           <span className="hidden sm:inline">{saving ? 'Sauvegarde...' : 'Enregistrer'}</span>
         </button>
@@ -287,15 +287,15 @@ export default function CreateContrat() {
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-5 mb-4">
         <h2 className="text-sm font-semibold text-slate-700 mb-3">Source du contrat</h2>
         <div className="flex flex-col sm:flex-row gap-3">
-          <label className={`flex items-center gap-3 flex-1 p-3.5 rounded-xl border-2 cursor-pointer transition-all ${source === 'scratch' ? 'border-[#A11010] bg-[#A11010]/5' : 'border-slate-200 hover:border-slate-300'}`}>
-            <input type="radio" name="source" value="scratch" checked={source === 'scratch'} onChange={() => setSource('scratch')} className="accent-[#A11010]" />
+          <label className={`flex items-center gap-3 flex-1 p-3.5 rounded-xl border-2 cursor-pointer transition-all ${source === 'scratch' ? 'border-[#640000] bg-[#640000]/5' : 'border-slate-200 hover:border-slate-300'}`}>
+            <input type="radio" name="source" value="scratch" checked={source === 'scratch'} onChange={() => setSource('scratch')} className="accent-[#640000]" />
             <div>
               <div className="font-semibold text-sm text-slate-800">Créer de zéro</div>
               <div className="text-xs text-slate-500">Saisir toutes les informations manuellement</div>
             </div>
           </label>
-          <label className={`flex items-center gap-3 flex-1 p-3.5 rounded-xl border-2 cursor-pointer transition-all ${source === 'fromFacture' ? 'border-[#A11010] bg-[#A11010]/5' : 'border-slate-200 hover:border-slate-300'}`}>
-            <input type="radio" name="source" value="fromFacture" checked={source === 'fromFacture'} onChange={() => setSource('fromFacture')} className="accent-[#A11010]" />
+          <label className={`flex items-center gap-3 flex-1 p-3.5 rounded-xl border-2 cursor-pointer transition-all ${source === 'fromFacture' ? 'border-[#640000] bg-[#640000]/5' : 'border-slate-200 hover:border-slate-300'}`}>
+            <input type="radio" name="source" value="fromFacture" checked={source === 'fromFacture'} onChange={() => setSource('fromFacture')} className="accent-[#640000]" />
             <div>
               <div className="font-semibold text-sm text-slate-800">Générer depuis une facture</div>
               <div className="text-xs text-slate-500">Les données client et articles sont importés</div>
@@ -406,7 +406,7 @@ export default function CreateContrat() {
               <button
                 type="button"
                 onClick={addItem}
-                className="flex items-center gap-1 text-[#A11010] bg-[#A11010]/10 hover:bg-[#A11010]/20 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+                className="flex items-center gap-1 text-[#640000] bg-[#640000]/10 hover:bg-[#640000]/20 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
               >
                 <Plus size={12} /> Ajouter
               </button>
@@ -414,7 +414,7 @@ export default function CreateContrat() {
             <div className="space-y-2">
               {items.map((item, i) => (
                 <div key={i} className="flex items-center gap-2">
-                  <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center text-xs font-bold text-[#A11010] bg-[#A11010]/10 rounded-lg">{i + 1}</span>
+                  <span className="w-6 h-6 flex-shrink-0 flex items-center justify-center text-xs font-bold text-[#640000] bg-[#640000]/10 rounded-lg">{i + 1}</span>
                   <input
                     type="text"
                     value={item}
@@ -433,7 +433,7 @@ export default function CreateContrat() {
             <button
               type="button"
               onClick={addItem}
-              className="mt-2 w-full py-2.5 border-2 border-dashed border-slate-200 hover:border-[#A11010]/40 text-slate-400 hover:text-[#A11010] rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2"
+              className="mt-2 w-full py-2.5 border-2 border-dashed border-slate-200 hover:border-[#640000]/40 text-slate-400 hover:text-[#640000] rounded-xl text-sm font-medium transition-all flex items-center justify-center gap-2"
             >
               <Plus size={14} /> Ajouter un élément
             </button>
@@ -462,7 +462,7 @@ export default function CreateContrat() {
           <button
             type="button"
             onClick={addModalite}
-            className="flex items-center gap-1 text-[#A11010] bg-[#A11010]/10 hover:bg-[#A11010]/20 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
+            className="flex items-center gap-1 text-[#640000] bg-[#640000]/10 hover:bg-[#640000]/20 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all"
           >
             <Plus size={12} /> Ajouter
           </button>
@@ -504,7 +504,7 @@ export default function CreateContrat() {
                 <span className="text-sm font-bold text-slate-700">
                   {totalFromModalites.toLocaleString('fr-CA', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} $
                 </span>
-                <button type="button" onClick={autoTotal} className="text-xs text-[#A11010] underline hover:no-underline">
+                <button type="button" onClick={autoTotal} className="text-xs text-[#640000] underline hover:no-underline">
                   → reporter comme total
                 </button>
               </div>
@@ -544,7 +544,7 @@ export default function CreateContrat() {
           <div className="mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-600">
             <span className="font-semibold text-slate-500 uppercase tracking-wide text-[10px] block mb-1">Aperçu clause totale :</span>
             Le montant total pour la réalisation des travaux ci-dessus cités a été arrêté par les deux parties à{' '}
-            <span className="font-bold text-[#A11010]">
+            <span className="font-bold text-[#640000]">
               {parseFloat(total).toLocaleString('fr-CA', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} $
             </span>{' '}
             ({totalEnLettres || nombreEnLettres(Math.round(parseFloat(total) || 0))} dollars).
@@ -592,7 +592,7 @@ export default function CreateContrat() {
         <button
           onClick={handleSaveAndPDF}
           disabled={saving || downloading}
-          className="flex items-center justify-center gap-2 bg-[#A11010] hover:bg-[#8a0d0d] text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-[#A11010]/25 transition-all disabled:opacity-50"
+          className="flex items-center justify-center gap-2 bg-[#640000] hover:bg-[#8a0d0d] text-white px-6 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-[#640000]/25 transition-all disabled:opacity-50"
         >
           <Download size={15} />
           {saving || downloading ? 'Génération...' : 'Enregistrer & Télécharger PDF'}

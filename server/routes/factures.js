@@ -7,7 +7,7 @@ const Facture = require('../models/Facture');
 const CompanyInfo = require('../models/CompanyInfo');
 
 // Logos embarqués en base64 pour le PDF
-const ycLogoPath = path.join(__dirname, '../../client/src/img/YC.png');
+const ycLogoPath = path.join(__dirname, '../../client/src/img/Logo-final.png');
 const apchqLogoPath = path.join(__dirname, '../../client/src/img/logo-apchq.png');
 const ycLogoBase64 = fs.existsSync(ycLogoPath)
   ? 'data:image/png;base64,' + fs.readFileSync(ycLogoPath).toString('base64')
@@ -111,26 +111,27 @@ function generateInvoiceHTML(facture, company) {
       justify-content: space-between;
       align-items: flex-start;
       padding-bottom: 24px;
-      border-bottom: 3px solid #A11010;
+      border-bottom: 3px solid #640000;
       margin-bottom: 32px;
     }
     .brand { display: flex; align-items: flex-start; gap: 14px; }
-    .brand-logo { width: 64px; height: 64px; object-fit: contain; }
+    .brand-logos { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
+    .brand-logo { width: 70px; height: 70px; object-fit: contain; }
+    .apchq-logo { width: 70px; height: 30px; object-fit: contain; }
     .brand-logo-placeholder {
       width: 56px; height: 56px;
-      background: #A11010;
+      background: #640000;
       border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
       color: white; font-size: 20px; font-weight: 800;
     }
-    .brand-name { font-size: 22px; font-weight: 800; color: #A11010; letter-spacing: -0.3px; }
+    .brand-name { font-size: 22px; font-weight: 800; color: #640000; letter-spacing: -0.3px; }
     .brand-profession { color: #333; font-size: 11px; margin-top: 2px; font-weight: 600; }
     .brand-license { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
-    .apchq-logo { height: 28px; object-fit: contain; }
     .license-tag {
       background: #fdf0f0;
       border: 1px solid #e8b0b0;
-      color: #A11010;
+      color: #640000;
       font-size: 10px;
       font-weight: 600;
       padding: 2px 7px;
@@ -141,7 +142,7 @@ function generateInvoiceHTML(facture, company) {
       font-size: 32px; font-weight: 800; color: #111;
       letter-spacing: 3px; text-transform: uppercase;
     }
-    .invoice-num { color: #A11010; font-size: 15px; font-weight: 700; margin-top: 4px; }
+    .invoice-num { color: #640000; font-size: 15px; font-weight: 700; margin-top: 4px; }
     .invoice-name { color: #333; font-size: 12px; font-style: italic; margin-top: 3px; }
     .invoice-date { color: #555; font-size: 12px; margin-top: 2px; }
     .badge {
@@ -165,7 +166,7 @@ function generateInvoiceHTML(facture, company) {
     /* ── Tableau ── */
     .table-wrap { margin-bottom: 28px; border-radius: 8px; overflow: hidden; border: 1px solid #ddd; }
     table { width: 100%; border-collapse: collapse; }
-    thead tr { background: #A11010; }
+    thead tr { background: #640000; }
     th {
       color: #fff; padding: 11px 13px; font-size: 11px;
       font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
@@ -178,7 +179,7 @@ function generateInvoiceHTML(facture, company) {
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:nth-child(even) { background: #f9f9f9; }
     .ref-badge {
-      background: #fde8e8; color: #A11010;
+      background: #fde8e8; color: #640000;
       padding: 2px 8px; border-radius: 12px;
       font-size: 11px; font-weight: 600; white-space: nowrap;
     }
@@ -196,17 +197,17 @@ function generateInvoiceHTML(facture, company) {
     }
     .total-row:last-child { border-bottom: none; }
     .total-row.grand {
-      background: #A11010; color: #fff;
+      background: #640000; color: #fff;
       font-size: 15px; font-weight: 700; padding: 12px 16px;
     }
     .total-val { font-weight: 600; }
 
     /* ── Notes ── */
     .notes {
-      background: #fdf0f0; border-left: 4px solid #A11010;
+      background: #fdf0f0; border-left: 4px solid #640000;
       padding: 12px 16px; border-radius: 0 8px 8px 0; margin-bottom: 28px;
     }
-    .notes-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #A11010; margin-bottom: 4px; letter-spacing: 1px; }
+    .notes-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #640000; margin-bottom: 4px; letter-spacing: 1px; }
     .notes-body { color: #5a1010; font-size: 12px; }
 
     /* ── Pied de page ── */
@@ -228,16 +229,18 @@ function generateInvoiceHTML(facture, company) {
 
   <div class="header">
     <div class="brand">
-      ${logo
-        ? `<img src="${logo}" alt="Logo" class="brand-logo" />`
-        : `<div class="brand-logo-placeholder">${(nomEntreprise || 'YC').substring(0, 2)}</div>`
-      }
+      <div class="brand-logos">
+        ${logo
+          ? `<img src="${logo}" alt="Logo" class="brand-logo" />`
+          : `<div class="brand-logo-placeholder">${(nomEntreprise || 'YC').substring(0, 2)}</div>`
+        }
+        ${apchqLogoBase64 ? `<img src="${apchqLogoBase64}" alt="APCHQ" class="apchq-logo" />` : ''}
+      </div>
       <div>
         <div class="brand-name">${nomEntreprise}</div>
         <div class="brand-profession">Paysagiste</div>
         <div class="brand-profession">Entrepreneur spécialisé</div>
         <div class="brand-license">
-          ${apchqLogoBase64 ? `<img src="${apchqLogoBase64}" alt="APCHQ" class="apchq-logo" />` : ''}
           ${company.rbq ? `<span class="license-tag">R.B.Q. ${company.rbq}</span>` : ''}
           ${company.apchq ? `<span class="license-tag">A.P.C.H.Q. ${company.apchq}</span>` : ''}
         </div>

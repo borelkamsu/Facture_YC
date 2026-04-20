@@ -369,7 +369,7 @@ export default function CreateRecu() {
         <h2 className="text-sm font-semibold text-slate-700 mb-3">Montants</h2>
         {totalContrat > 0 && (
           <div className="mb-3 p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600">
-            Total du contrat : <b className="text-[#A11010]">{parseFloat(totalContrat).toLocaleString('fr-CA', { minimumFractionDigits: 0 })} $</b>
+            Total du contrat : <b className="text-[#640000]">{parseFloat(totalContrat).toLocaleString('fr-CA', { minimumFractionDigits: 0 })} $</b>
             {' '}— Le reste à payer sera calculé automatiquement.
           </div>
         )}

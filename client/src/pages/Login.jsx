@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import logo from '../img/YC.png';
+import logo from '../img/Logo-final.png';
 
 export default function Login() {
   const { login }          = useAuth();
@@ -33,7 +33,7 @@ export default function Login() {
         <div className="flex flex-col items-center mb-8">
           <img src={logo} alt="Logo" className="w-20 h-20 object-contain rounded-2xl mb-4 shadow-xl" />
           <h1 className="text-white font-extrabold text-2xl tracking-wide">YOUMBI CONCEPT INC</h1>
-          <p className="text-[#A11010] text-xs font-semibold tracking-widest mt-1">PAYSAGISTE</p>
+          <p className="text-[#640000] text-xs font-semibold tracking-widest mt-1">PAYSAGISTE</p>
           <p className="text-slate-400 text-sm mt-3">Connectez-vous pour accéder à la facturation</p>
         </div>
 
@@ -41,7 +41,7 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 space-y-4">
 
           {error && (
-            <div className="bg-[#A11010]/20 border border-[#A11010]/40 text-[#f87c8b] text-sm rounded-xl px-4 py-3">
+            <div className="bg-[#640000]/20 border border-[#640000]/40 text-[#f87c8b] text-sm rounded-xl px-4 py-3">
               {error}
             </div>
           )}
@@ -55,7 +55,7 @@ export default function Login() {
               placeholder="Votre identifiant"
               required
               autoFocus
-              className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#A11010] focus:ring-1 focus:ring-[#A11010] transition"
+              className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#640000] focus:ring-1 focus:ring-[#640000] transition"
             />
           </div>
 
@@ -67,14 +67,14 @@ export default function Login() {
               onChange={e => setPassword(e.target.value)}
               placeholder="Votre mot de passe"
               required
-              className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#A11010] focus:ring-1 focus:ring-[#A11010] transition"
+              className="w-full bg-white/10 border border-white/20 text-white placeholder-slate-500 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#640000] focus:ring-1 focus:ring-[#640000] transition"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#A11010] hover:bg-[#b53345] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition-colors text-sm mt-2"
+            className="w-full bg-[#640000] hover:bg-[#b53345] disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold py-3 rounded-xl transition-colors text-sm mt-2"
           >
             {loading ? 'Connexion...' : 'Se connecter'}
           </button>

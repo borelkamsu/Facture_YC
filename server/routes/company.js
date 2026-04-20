@@ -19,7 +19,7 @@ const DEFAULTS = {
 
 function seedLogo() {
   try {
-    const logoPath = path.join(__dirname, '../../client/src/img/YC.png');
+    const logoPath = path.join(__dirname, '../../client/src/img/Logo-final.png');
     const buffer = fs.readFileSync(logoPath);
     return `data:image/png;base64,${buffer.toString('base64')}`;
   } catch {

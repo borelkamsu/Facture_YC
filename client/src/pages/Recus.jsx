@@ -153,7 +153,7 @@ export default function Recus() {
                     </td>
                     <td className="px-4 py-4">
                       {r.contratNumero
-                        ? <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-[#A11010]/10 text-xs font-semibold text-[#A11010]">
+                        ? <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-[#640000]/10 text-xs font-semibold text-[#640000]">
                             <FileSignature size={10} />{r.contratNumero}
                           </span>
                         : <span className="text-slate-400 text-xs">—</span>

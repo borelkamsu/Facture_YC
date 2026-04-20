@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Package, PlusCircle, Receipt, Building2, LogOut, FileSignature, ClipboardCheck } from 'lucide-react';
-import fallbackLogo from '../img/YC.png';
+import fallbackLogo from '../img/Logo-final.png';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
 
@@ -58,7 +58,7 @@ export default function Navbar() {
             />
             <div className="min-w-0">
               <div className="font-extrabold text-base tracking-wide truncate">{nameLine1}</div>
-              <div className="text-[#A11010] text-xs font-semibold tracking-widest truncate">{nameLine2}</div>
+              <div className="text-[#640000] text-xs font-semibold tracking-widest truncate">{nameLine2}</div>
             </div>
           </div>
           <div className="text-xs text-slate-400 mt-3 font-medium">Gestion de Facturation</div>
@@ -74,7 +74,7 @@ export default function Navbar() {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-150 ${
                   isActive
-                    ? 'bg-[#A11010] text-white shadow-lg shadow-[#A11010]/30'
+                    ? 'bg-[#640000] text-white shadow-lg shadow-[#640000]/30'
                     : 'text-slate-400 hover:bg-white/10 hover:text-white'
                 }`
               }
@@ -112,7 +112,7 @@ export default function Navbar() {
         />
         <div className="min-w-0 flex-1">
           <div className="font-extrabold text-white text-sm leading-tight truncate">{nameLine1}</div>
-          <div className="text-[#A11010] text-[10px] font-semibold tracking-widest truncate">{nameLine2}</div>
+          <div className="text-[#640000] text-[10px] font-semibold tracking-widest truncate">{nameLine2}</div>
         </div>
         <button
           onClick={handleLogout}
@@ -132,7 +132,7 @@ export default function Navbar() {
             end={to !== '/factures/new'}
             className={({ isActive }) =>
               `flex-1 flex flex-col items-center justify-center py-2 gap-0.5 text-[10px] font-semibold transition-colors ${
-                isActive ? 'text-[#A11010]' : 'text-slate-500'
+                isActive ? 'text-[#640000]' : 'text-slate-500'
               }`
             }
           >

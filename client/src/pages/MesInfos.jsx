@@ -138,7 +138,7 @@ export default function MesInfos() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="w-8 h-8 border-2 border-[#A11010]/30 border-t-[#A11010] rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#640000]/30 border-t-[#640000] rounded-full animate-spin" />
       </div>
     );
   }
@@ -152,7 +152,7 @@ export default function MesInfos() {
         <div>
           <div className="flex items-center gap-2.5 mb-0.5">
             <div className="w-8 h-8 md:w-9 md:h-9 bg-rose-100 rounded-xl flex items-center justify-center">
-              <Building2 size={16} className="text-[#A11010]" />
+              <Building2 size={16} className="text-[#640000]" />
             </div>
             <h1 className="text-xl md:text-2xl font-bold text-slate-800">Mes Infos</h1>
           </div>
@@ -161,7 +161,7 @@ export default function MesInfos() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex items-center gap-2 bg-[#A11010] hover:bg-[#8a0d0d] active:scale-95 text-white px-3 py-2 md:px-6 md:py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all shadow-lg shadow-[#A11010]/25 disabled:opacity-50 flex-shrink-0"
+          className="flex items-center gap-2 bg-[#640000] hover:bg-[#8a0d0d] active:scale-95 text-white px-3 py-2 md:px-6 md:py-2.5 rounded-xl font-semibold text-xs md:text-sm transition-all shadow-lg shadow-[#640000]/25 disabled:opacity-50 flex-shrink-0"
         >
           <Save size={15} />
           <span className="hidden sm:inline">{saving ? 'Sauvegarde...' : 'Enregistrer'}</span>
@@ -172,7 +172,7 @@ export default function MesInfos() {
       {/* Logo */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 md:p-6 mb-4">
         <h2 className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
-          <Upload size={15} className="text-[#A11010]" />
+          <Upload size={15} className="text-[#640000]" />
           Logo de l'entreprise
         </h2>
         <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -208,14 +208,14 @@ export default function MesInfos() {
             onClick={() => fileRef.current?.click()}
             className={`flex-1 w-full border-2 border-dashed rounded-2xl p-4 md:p-6 text-center cursor-pointer transition-all ${
               dragOver
-                ? 'border-[#A11010] bg-rose-50'
-                : 'border-slate-200 hover:border-[#A11010]/50 hover:bg-rose-50/30'
+                ? 'border-[#640000] bg-rose-50'
+                : 'border-slate-200 hover:border-[#640000]/50 hover:bg-rose-50/30'
             }`}
           >
             <Upload size={20} className="mx-auto mb-2 text-slate-400" />
             <p className="text-sm font-medium text-slate-600">
               <span className="hidden sm:inline">Glissez votre logo ici ou </span>
-              <span className="text-[#A11010] font-semibold">Appuyez pour choisir</span>
+              <span className="text-[#640000] font-semibold">Appuyez pour choisir</span>
             </p>
             <p className="text-xs text-slate-400 mt-1">PNG, JPG, SVG — max 5 Mo</p>
           </div>
@@ -242,7 +242,7 @@ export default function MesInfos() {
                   value={form[key] || ''}
                   onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
                   placeholder={placeholder}
-                  className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#A11010]/20 focus:border-[#A11010]/60 transition-all"
+                  className="w-full border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#640000]/20 focus:border-[#640000]/60 transition-all"
                 />
               </div>
             ))}
@@ -258,10 +258,10 @@ export default function MesInfos() {
         <div className="flex items-start gap-4">
           {form.logo
             ? <img src={form.logo} alt="Logo" className="w-14 h-14 object-contain rounded-xl border border-slate-200 bg-white p-1" />
-            : <div className="w-14 h-14 bg-[#A11010] rounded-xl flex items-center justify-center text-white font-bold text-lg">{(form.nom || 'YC').substring(0, 2)}</div>
+            : <div className="w-14 h-14 bg-[#640000] rounded-xl flex items-center justify-center text-white font-bold text-lg">{(form.nom || 'YC').substring(0, 2)}</div>
           }
           <div>
-            <div className="font-extrabold text-[#A11010] text-lg">{form.nom || 'Nom de l\'entreprise'}</div>
+            <div className="font-extrabold text-[#640000] text-lg">{form.nom || 'Nom de l\'entreprise'}</div>
             {form.tagline && <div className="text-slate-500 text-xs mt-0.5">{form.tagline}</div>}
             <div className="text-slate-500 text-xs mt-1 leading-relaxed">
               {[form.adresse, [form.ville, form.province, form.codePostal].filter(Boolean).join(' ')].filter(Boolean).join(' • ')}
@@ -270,12 +270,12 @@ export default function MesInfos() {
             </div>
             <div className="flex gap-2 mt-1.5">
               {form.rbq && (
-                <span className="text-[10px] bg-rose-100 text-[#A11010] px-2 py-0.5 rounded-full font-semibold">
+                <span className="text-[10px] bg-rose-100 text-[#640000] px-2 py-0.5 rounded-full font-semibold">
                   R.B.Q. {form.rbq}
                 </span>
               )}
               {form.apchq && (
-                <span className="text-[10px] bg-rose-100 text-[#A11010] px-2 py-0.5 rounded-full font-semibold">
+                <span className="text-[10px] bg-rose-100 text-[#640000] px-2 py-0.5 rounded-full font-semibold">
                   A.P.C.H.Q. {form.apchq}
                 </span>
               )}
@@ -289,7 +289,7 @@ export default function MesInfos() {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#A11010] hover:bg-[#8a0d0d] active:scale-95 text-white px-8 py-3 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-[#A11010]/25 disabled:opacity-50"
+          className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#640000] hover:bg-[#8a0d0d] active:scale-95 text-white px-8 py-3 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-[#640000]/25 disabled:opacity-50"
         >
           <Save size={16} />
           {saving ? 'Sauvegarde en cours...' : 'Enregistrer les modifications'}
