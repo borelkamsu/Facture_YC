@@ -38,7 +38,7 @@ function generateInvoiceHTML(facture, company) {
   const nomEntreprise = normalizeNom(company.nom);
   const villePostale = [company.ville, company.province, company.codePostal].filter(Boolean).join('  ');
 
-  const lignesHTML = facture.lignes.map((l, i) => `
+  const lignesHTML = (facture.lignes || []).map((l, i) => `
     <tr>
       <td class="num">${i + 1}</td>
       <td><span class="ref-badge">${l.reference || '—'}</span></td>
@@ -49,9 +49,10 @@ function generateInvoiceHTML(facture, company) {
     </tr>
   `).join('');
 
+  const client = facture.client || {};
   const clientAdresse = [
-    facture.client.adresse,
-    [facture.client.ville, facture.client.codePostal].filter(Boolean).join(' ')
+    client.adresse,
+    [client.ville, client.codePostal].filter(Boolean).join(' ')
   ].filter(Boolean).join('<br>');
 
   return `<!DOCTYPE html>
@@ -96,8 +97,8 @@ function generateInvoiceHTML(facture, company) {
     }
     .brand { display: flex; align-items: flex-start; gap: 14px; }
     .brand-logos { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
-    .brand-logo { width: 70px; height: 70px; object-fit: contain; }
-    .apchq-logo { width: 70px; height: 30px; object-fit: contain; }
+    .brand-logo { width: 90px; height: 90px; object-fit: contain; }
+    .apchq-logo { width: 80px; height: 34px; object-fit: contain; }
     .brand-logo-placeholder {
       width: 56px; height: 56px;
       background: #640000;
@@ -247,11 +248,11 @@ function generateInvoiceHTML(facture, company) {
     </div>
     <div class="party right">
       <div class="party-label">Facturé à</div>
-      <div class="party-name">${facture.client.nom || ''}</div>
+      <div class="party-name">${client.nom || ''}</div>
       <div class="party-detail">
         ${clientAdresse}
-        ${facture.client.telephone ? '<br>Tél : ' + facture.client.telephone : ''}
-        ${facture.client.email ? '<br>' + facture.client.email : ''}
+        ${client.telephone ? '<br>Tél : ' + client.telephone : ''}
+        ${client.email ? '<br>' + client.email : ''}
       </div>
     </div>
   </div>

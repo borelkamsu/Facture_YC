@@ -101,8 +101,8 @@ function generateContratHTML(contrat, company) {
     }
     .brand { display: flex; align-items: flex-start; gap: 14px; }
     .brand-logos { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; }
-    .brand-logo { width: 70px; height: 70px; object-fit: contain; }
-    .apchq-logo { width: 70px; height: 30px; object-fit: contain; }
+    .brand-logo { width: 90px; height: 90px; object-fit: contain; }
+    .apchq-logo { width: 80px; height: 34px; object-fit: contain; }
     .brand-logo-placeholder {
       width: 56px; height: 56px; background: #640000; border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
