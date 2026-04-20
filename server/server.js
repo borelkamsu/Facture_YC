@@ -17,6 +17,8 @@ app.use('/api/auth', require('./routes/auth'));
 const auth = require('./middleware/auth');
 app.use('/api/articles', auth, require('./routes/articles'));
 app.use('/api/factures', auth, require('./routes/factures'));
+app.use('/api/contrats', auth, require('./routes/contrats'));
+app.use('/api/recus',    auth, require('./routes/recus'));
 app.use('/api/company',  auth, require('./routes/company'));
 
 // Servir le frontend React en production

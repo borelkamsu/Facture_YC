@@ -1,0 +1,46 @@
+const mongoose = require('mongoose');
+
+const ModaliteSchema = new mongoose.Schema({
+  montant:     { type: Number, default: 0 },
+  description: { type: String, default: '' }
+}, { _id: false });
+
+const ContratSchema = new mongoose.Schema({
+  numero:        { type: String, unique: true },
+  factureId:     { type: mongoose.Schema.Types.ObjectId, ref: 'Facture', default: null },
+  factureNumero: { type: String, default: '' },
+  date:          { type: Date, default: Date.now },
+  dateDebut:     { type: Date, default: null },
+  client: {
+    nom:        { type: String, default: '' },
+    adresse:    { type: String, default: '' },
+    ville:      { type: String, default: '' },
+    codePostal: { type: String, default: '' },
+    telephone:  { type: String, default: '' },
+    email:      { type: String, default: '' }
+  },
+  phraseAccroche: {
+    type:    String,
+    default: "Réalisation des travaux d'aménagement paysager énuméré comme suit :"
+  },
+  items:          [{ type: String }],
+  contenuLibre:   { type: String, default: '' },
+  modalites:      [ModaliteSchema],
+  total:          { type: Number, default: 0 },
+  totalEnLettres: { type: String, default: '' },
+  notes:          { type: String, default: '' }
+}, { timestamps: true });
+
+ContratSchema.pre('save', async function (next) {
+  if (!this.isNew) return next();
+  const year      = new Date().getFullYear();
+  const yearStart = new Date(year, 0, 1);
+  const yearEnd   = new Date(year + 1, 0, 1);
+  const count     = await this.constructor.countDocuments({
+    createdAt: { $gte: yearStart, $lt: yearEnd }
+  });
+  this.numero = `CON-${year}-${String(count + 1).padStart(4, '0')}`;
+  next();
+});
+
+module.exports = mongoose.model('Contrat', ContratSchema);

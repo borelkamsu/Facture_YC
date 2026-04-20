@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Package, PlusCircle, Receipt, Building2, LogOut } from 'lucide-react';
+import { Package, PlusCircle, Receipt, Building2, LogOut, FileSignature, ClipboardCheck } from 'lucide-react';
 import fallbackLogo from '../img/YC.png';
 import api from '../api';
 import { useAuth } from '../context/AuthContext';
 
 const navLinks = [
-  { to: '/factures',     label: 'Mes Factures',     short: 'Factures', icon: Receipt    },
-  { to: '/factures/new', label: 'Créer une Facture', short: 'Créer',    icon: PlusCircle },
-  { to: '/articles',     label: 'Base Articles',     short: 'Articles', icon: Package    },
-  { to: '/mes-infos',    label: 'Mes Infos',         short: 'Infos',    icon: Building2  },
+  { to: '/factures',     label: 'Mes Factures',     short: 'Factures', icon: Receipt        },
+  { to: '/factures/new', label: 'Créer une Facture', short: 'Créer',    icon: PlusCircle     },
+  { to: '/contrats',     label: 'Contrats',          short: 'Contrats', icon: FileSignature  },
+  { to: '/recus',        label: 'Reçus',             short: 'Reçus',    icon: ClipboardCheck },
+  { to: '/articles',     label: 'Base Articles',     short: 'Articles', icon: Package        },
+  { to: '/mes-infos',    label: 'Mes Infos',         short: 'Infos',    icon: Building2      },
 ];
 
 export default function Navbar() {

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Receipt, Plus, Download, Trash2, Pencil,
-  Calendar, User, AlertCircle, CheckCircle, FileText
+  Calendar, User, AlertCircle, CheckCircle, FileText, FileSignature
 } from 'lucide-react';
 import api from '../api';
 
@@ -135,12 +135,15 @@ export default function Factures() {
                     <td className="px-5 py-4 text-right font-bold text-slate-800 text-sm">{fmtMoney(f.total)} $</td>
                     <td className="px-5 py-4 text-right">
                       <div className="flex items-center justify-end gap-1.5">
+                        <button onClick={() => navigate(`/contrats/new?factureId=${f._id}`)} className="inline-flex items-center gap-1 text-[#A11010] bg-[#A11010]/10 hover:bg-[#A11010]/20 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors" title="Générer un contrat depuis cette facture">
+                          <FileSignature size={12} /> Contrat
+                        </button>
                         <button onClick={() => navigate(`/factures/${f._id}/edit`)} className="inline-flex items-center gap-1 text-slate-600 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors">
                           <Pencil size={12} /> Modifier
                         </button>
-                        <button onClick={() => handlePDF(f)} disabled={downloading === f._id} className="inline-flex items-center gap-1 text-[#A11010] bg-[#A11010]/10 hover:bg-[#A11010]/20 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50">
+                        <button onClick={() => handlePDF(f)} disabled={downloading === f._id} className="inline-flex items-center gap-1 text-slate-600 bg-slate-100 hover:bg-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-50">
                           <Download size={12} />
-                          {downloading === f._id ? <span className="flex items-center gap-1"><span className="w-3 h-3 border border-[#A11010] border-t-transparent rounded-full animate-spin" />PDF...</span> : 'PDF'}
+                          {downloading === f._id ? <span className="flex items-center gap-1"><span className="w-3 h-3 border border-slate-500 border-t-transparent rounded-full animate-spin" />PDF...</span> : 'PDF'}
                         </button>
                         <button onClick={() => handleDelete(f._id)} className="w-7 h-7 flex items-center justify-center text-red-400 hover:bg-red-50 rounded-lg transition-colors">
                           <Trash2 size={13} />
@@ -181,15 +184,17 @@ export default function Factures() {
                     <span>TTC : <b className="text-slate-800 text-sm">{fmtMoney(f.total)} $</b></span>
                   </div>
                 </div>
-                <div className="px-3 pb-3 flex gap-2">
-                  <button onClick={() => navigate(`/factures/${f._id}/edit`)} className="flex-1 flex items-center justify-center gap-1.5 text-slate-600 bg-slate-100 hover:bg-slate-200 py-2 rounded-xl text-xs font-semibold transition-colors">
-                    <Pencil size={13} /> Modifier
+                <div className="px-3 pb-3 grid grid-cols-4 gap-1.5">
+                  <button onClick={() => navigate(`/contrats/new?factureId=${f._id}`)} className="flex items-center justify-center gap-1 text-[#A11010] bg-[#A11010]/10 hover:bg-[#A11010]/20 py-2 rounded-xl text-xs font-semibold transition-colors" title="Générer un contrat">
+                    <FileSignature size={12} />
                   </button>
-                  <button onClick={() => handlePDF(f)} disabled={downloading === f._id} className="flex-1 flex items-center justify-center gap-1.5 text-[#A11010] bg-[#A11010]/10 hover:bg-[#A11010]/20 py-2 rounded-xl text-xs font-semibold transition-colors disabled:opacity-50">
+                  <button onClick={() => navigate(`/factures/${f._id}/edit`)} className="flex items-center justify-center gap-1.5 text-slate-600 bg-slate-100 hover:bg-slate-200 py-2 rounded-xl text-xs font-semibold transition-colors">
+                    <Pencil size={13} />
+                  </button>
+                  <button onClick={() => handlePDF(f)} disabled={downloading === f._id} className="flex items-center justify-center gap-1.5 text-slate-600 bg-slate-100 hover:bg-slate-200 py-2 rounded-xl text-xs font-semibold transition-colors disabled:opacity-50">
                     <Download size={13} />
-                    {downloading === f._id ? 'PDF...' : 'PDF'}
                   </button>
-                  <button onClick={() => handleDelete(f._id)} className="w-10 flex items-center justify-center text-red-400 bg-red-50 hover:bg-red-100 rounded-xl transition-colors">
+                  <button onClick={() => handleDelete(f._id)} className="flex items-center justify-center text-red-400 bg-red-50 hover:bg-red-100 rounded-xl transition-colors">
                     <Trash2 size={14} />
                   </button>
                 </div>
