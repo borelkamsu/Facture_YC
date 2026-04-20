@@ -1,6 +1,6 @@
 const express       = require('express');
 const router        = express.Router();
-const puppeteer     = require('puppeteer-core');
+const { getBrowser } = require('../utils/browser');
 const path          = require('path');
 const fs            = require('fs');
 const Contrat       = require('../models/Contrat');
@@ -14,24 +14,6 @@ const ycLogoBase64  = fs.existsSync(ycLogoPath)
   ? 'data:image/png;base64,' + fs.readFileSync(ycLogoPath).toString('base64') : '';
 const apchqLogoBase64 = fs.existsSync(apchqLogoPath)
   ? 'data:image/png;base64,' + fs.readFileSync(apchqLogoPath).toString('base64') : '';
-
-// ── Puppeteer ─────────────────────────────────────────────────────────────────
-async function launchBrowser() {
-  if (process.env.NODE_ENV === 'production') {
-    const chromium = require('@sparticuz/chromium');
-    return puppeteer.launch({
-      args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'],
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-    });
-  }
-  return puppeteer.launch({
-    headless: 'new',
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
-  });
-}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function fmt(val) {
@@ -57,7 +39,7 @@ function normalizeNom(nom) {
 
 // ── Générateur HTML du contrat ────────────────────────────────────────────────
 function generateContratHTML(contrat, company) {
-  const logo          = company.logo || '';
+  const logo          = company.logo || ycLogoBase64;
   const nomEntreprise = normalizeNom(company.nom);
   const villePostale  = [company.ville, company.province, company.codePostal].filter(Boolean).join('  ');
 
@@ -393,7 +375,7 @@ router.delete('/:id', async (req, res) => {
 
 // ── Route PDF ─────────────────────────────────────────────────────────────────
 router.get('/:id/pdf', async (req, res) => {
-  let browser;
+  let page;
   try {
     const [contrat, company] = await Promise.all([
       Contrat.findById(req.params.id),
@@ -403,8 +385,8 @@ router.get('/:id/pdf', async (req, res) => {
 
     const html = generateContratHTML(contrat, company || {});
 
-    browser = await launchBrowser();
-    const page = await browser.newPage();
+    const browser = await getBrowser();
+    page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'domcontentloaded' });
     const pdf = await page.pdf({
       format: 'A4',
@@ -419,7 +401,7 @@ router.get('/:id/pdf', async (req, res) => {
     console.error('Erreur génération PDF contrat:', err);
     res.status(500).json({ message: 'Erreur PDF : ' + err.message });
   } finally {
-    if (browser) await browser.close();
+    if (page) await page.close().catch(() => {});
   }
 });
 

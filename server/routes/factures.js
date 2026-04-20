@@ -1,38 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const puppeteer = require('puppeteer-core');
 const path = require('path');
 const fs = require('fs');
 const Facture = require('../models/Facture');
 const CompanyInfo = require('../models/CompanyInfo');
+const { getBrowser } = require('../utils/browser');
 
-// Logos embarqués en base64 pour le PDF
-const ycLogoPath = path.join(__dirname, '../../client/src/img/Logo-final.png');
+// Logos statiques base64 (fallback)
+const ycLogoPath    = path.join(__dirname, '../../client/src/img/Logo-final.png');
 const apchqLogoPath = path.join(__dirname, '../../client/src/img/logo-apchq.png');
-const ycLogoBase64 = fs.existsSync(ycLogoPath)
-  ? 'data:image/png;base64,' + fs.readFileSync(ycLogoPath).toString('base64')
-  : '';
+const ycLogoBase64  = fs.existsSync(ycLogoPath)
+  ? 'data:image/png;base64,' + fs.readFileSync(ycLogoPath).toString('base64') : '';
 const apchqLogoBase64 = fs.existsSync(apchqLogoPath)
-  ? 'data:image/png;base64,' + fs.readFileSync(apchqLogoPath).toString('base64')
-  : '';
-
-async function launchBrowser() {
-  if (process.env.NODE_ENV === 'production') {
-    const chromium = require('@sparticuz/chromium');
-    return puppeteer.launch({
-      args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'],
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-    });
-  }
-  // Développement local (Windows/Mac) — Chrome installé sur le poste
-  return puppeteer.launch({
-    headless: 'new',
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
-  });
-}
+  ? 'data:image/png;base64,' + fs.readFileSync(apchqLogoPath).toString('base64') : '';
 
 function fmt(val) {
   return parseFloat(val || 0).toLocaleString('fr-CA', {
@@ -54,7 +34,7 @@ function normalizeNom(nom) {
 }
 
 function generateInvoiceHTML(facture, company) {
-  const logo = company.logo || '';
+  const logo = company.logo || ycLogoBase64;
   const nomEntreprise = normalizeNom(company.nom);
   const villePostale = [company.ville, company.province, company.codePostal].filter(Boolean).join('  ');
 
@@ -381,7 +361,7 @@ router.put('/:id', async (req, res) => {
 });
 
 router.get('/:id/pdf', async (req, res) => {
-  let browser;
+  let page;
   try {
     const [facture, company] = await Promise.all([
       Facture.findById(req.params.id),
@@ -391,11 +371,9 @@ router.get('/:id/pdf', async (req, res) => {
 
     const html = generateInvoiceHTML(facture, company || {});
 
-    browser = await launchBrowser();
-
-    const page = await browser.newPage();
+    const browser = await getBrowser();
+    page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'domcontentloaded' });
-
     const pdf = await page.pdf({
       format: 'A4',
       margin: { top: '12mm', bottom: '12mm', left: '8mm', right: '8mm' },
@@ -406,10 +384,10 @@ router.get('/:id/pdf', async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename="facture-${facture.numero}.pdf"`);
     res.send(pdf);
   } catch (err) {
-    console.error('Erreur génération PDF:', err);
+    console.error('Erreur génération PDF facture:', err);
     res.status(500).json({ message: 'Erreur PDF : ' + err.message });
   } finally {
-    if (browser) await browser.close();
+    if (page) await page.close().catch(() => {});
   }
 });
 

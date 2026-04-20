@@ -1,6 +1,6 @@
 const express     = require('express');
 const router      = express.Router();
-const puppeteer   = require('puppeteer-core');
+const { getBrowser } = require('../utils/browser');
 const path        = require('path');
 const fs          = require('fs');
 const Recu        = require('../models/Recu');
@@ -14,24 +14,6 @@ const ycLogoBase64  = fs.existsSync(ycLogoPath)
   ? 'data:image/png;base64,' + fs.readFileSync(ycLogoPath).toString('base64') : '';
 const apchqLogoBase64 = fs.existsSync(apchqLogoPath)
   ? 'data:image/png;base64,' + fs.readFileSync(apchqLogoPath).toString('base64') : '';
-
-// ── Puppeteer ─────────────────────────────────────────────────────────────────
-async function launchBrowser() {
-  if (process.env.NODE_ENV === 'production') {
-    const chromium = require('@sparticuz/chromium');
-    return puppeteer.launch({
-      args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox'],
-      defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
-      headless: chromium.headless,
-    });
-  }
-  return puppeteer.launch({
-    headless: 'new',
-    executablePath: process.env.PUPPETEER_EXECUTABLE_PATH,
-    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
-  });
-}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 function fmtMoney(val) {
@@ -52,13 +34,14 @@ function normalizeNom(nom) {
 
 // ── Générateur HTML du reçu ───────────────────────────────────────────────────
 function generateRecuHTML(recu, company) {
-  const logo          = company.logo || '';
+  const logo          = company.logo || ycLogoBase64;
   const nomEntreprise = normalizeNom(company.nom);
   const villePostale  = [company.ville, company.province, company.codePostal].filter(Boolean).join('  ');
 
+  const client = recu.client || {};
   const clientAdresse = [
-    recu.client.adresse,
-    [recu.client.ville, recu.client.codePostal].filter(Boolean).join(' ')
+    client.adresse,
+    [client.ville, client.codePostal].filter(Boolean).join(' ')
   ].filter(Boolean).join('<br>');
 
   const montantLettres = recu.montantRecuEnLettres
@@ -221,11 +204,11 @@ function generateRecuHTML(recu, company) {
       </div>
       <div class="party right">
         <div class="party-label">Remis à</div>
-        <div class="party-name">${recu.client.nom || ''}</div>
+        <div class="party-name">${client.nom || ''}</div>
         <div class="party-detail">
           ${clientAdresse}
-          ${recu.client.telephone ? '<br>Tél : ' + recu.client.telephone : ''}
-          ${recu.client.email ? '<br>' + recu.client.email : ''}
+          ${client.telephone ? '<br>Tél : ' + client.telephone : ''}
+          ${client.email ? '<br>' + client.email : ''}
         </div>
       </div>
     </div>
@@ -269,7 +252,7 @@ function generateRecuHTML(recu, company) {
         <div class="signature-line">Signature &amp; Date</div>
       </div>
       <div class="signature-col">
-        <div class="signature-label">Le Client — ${recu.client.nom || ''}</div>
+        <div class="signature-label">Le Client — ${client.nom || ''}</div>
         <div class="signature-line">Signature &amp; Date</div>
       </div>
     </div>
@@ -336,7 +319,7 @@ router.delete('/:id', async (req, res) => {
 
 // ── Route PDF ─────────────────────────────────────────────────────────────────
 router.get('/:id/pdf', async (req, res) => {
-  let browser;
+  let page;
   try {
     const [recu, company] = await Promise.all([
       Recu.findById(req.params.id),
@@ -346,8 +329,8 @@ router.get('/:id/pdf', async (req, res) => {
 
     const html = generateRecuHTML(recu, company || {});
 
-    browser = await launchBrowser();
-    const page = await browser.newPage();
+    const browser = await getBrowser();
+    page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'domcontentloaded' });
     const pdf = await page.pdf({
       format: 'A4',
@@ -362,7 +345,7 @@ router.get('/:id/pdf', async (req, res) => {
     console.error('Erreur génération PDF reçu:', err);
     res.status(500).json({ message: 'Erreur PDF : ' + err.message });
   } finally {
-    if (browser) await browser.close();
+    if (page) await page.close().catch(() => {});
   }
 });
 

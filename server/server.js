@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
@@ -48,10 +49,26 @@ async function createDefaultUser() {
   }
 }
 
+async function refreshCompanyLogo() {
+  try {
+    const CompanyInfo = require('./models/CompanyInfo');
+    const logoPath = path.join(__dirname, '../client/src/img/Logo-final.png');
+    if (!fs.existsSync(logoPath)) return;
+    const logoBase64 = 'data:image/png;base64,' + fs.readFileSync(logoPath).toString('base64');
+    const result = await CompanyInfo.updateMany({}, { $set: { logo: logoBase64 } });
+    if (result.modifiedCount > 0) {
+      console.log('🖼️  Logo entreprise mis à jour → Logo-final.png');
+    }
+  } catch (err) {
+    console.warn('⚠️  Impossible de mettre à jour le logo:', err.message);
+  }
+}
+
 mongoose.connect(MONGODB_URI)
   .then(async () => {
     console.log('✅ Connecté à MongoDB:', MONGODB_URI);
     await createDefaultUser();
+    await refreshCompanyLogo();
     app.listen(PORT, () => {
       console.log(`🚀 Serveur démarré sur le port ${PORT}`);
     });
