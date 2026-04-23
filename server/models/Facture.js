@@ -41,13 +41,15 @@ const FactureSchema = new mongoose.Schema({
 
 FactureSchema.pre('save', async function (next) {
   if (!this.isNew) return next();
-  const year = new Date().getFullYear();
-  const yearStart = new Date(year, 0, 1);
-  const yearEnd = new Date(year + 1, 0, 1);
-  const count = await this.constructor.countDocuments({
-    createdAt: { $gte: yearStart, $lt: yearEnd }
-  });
-  this.numero = `FAC-${year}-${String(count + 1).padStart(4, '0')}`;
+  const year   = new Date().getFullYear();
+  const prefix = `FAC-${year}-`;
+  const last   = await this.constructor.findOne(
+    { numero: { $regex: `^${prefix}` } },
+    { numero: 1 },
+    { sort: { numero: -1 } }
+  );
+  const seq    = last ? parseInt(last.numero.slice(prefix.length), 10) + 1 : 1;
+  this.numero  = `${prefix}${String(seq).padStart(4, '0')}`;
   next();
 });
 
